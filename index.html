@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生成你的旅行小红书</title>
+
+<style>
+body{
+    font-family:-apple-system,BlinkMacSystemFont;
+    background:#fafafa;
+    text-align:center;
+    padding:30px;
+}
+.card{
+    background:white;
+    border-radius:16px;
+    padding:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+button{
+    width:90%;
+    padding:15px;
+    margin-top:15px;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    background:#ff2442;
+    color:white;
+}
+#result{
+    white-space:pre-wrap;
+    text-align:left;
+    margin-top:20px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>✨ 生成你的旅行小红书</h2>
+
+<div class="card">
+
+<p>点击生成属于你的入住分享</p>
+
+<button onclick="generate()">生成我的旅行笔记</button>
+
+<button onclick="copyText()">复制文案</button>
+
+<button onclick="openXHS()">打开小红书发布</button>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+
+let generatedText = "";
+
+async function generate(){
+
+document.getElementById("result").innerHTML="正在生成中...";
+
+const prompt = `
+帮我写一篇小红书风格的民宿分享：
+
+城市：新加坡
+风格：治愈系民宿
+人群：旅行情侣
+语气：真实自然
+
+包含：
+1️⃣ 爆款标题3个
+2️⃣ 正文
+3️⃣ 标签（10个）
+`;
+
+try{
+
+const response = await fetch("https://api.openai.com/v1/chat/completions",{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+"Authorization":"Bearer YOUR_API_KEY"
+},
+body:JSON.stringify({
+model:"gpt-4o-mini",
+messages:[
+{role:"user",content:prompt}
+]
+})
+});
+
+const data = await response.json();
+
+generatedText = data.choices[0].message.content;
+
+document.getElementById("result").innerText = generatedText;
+
+}catch(e){
+document.getElementById("result").innerText="生成失败，请稍后再试";
+}
+
+}
+
+function copyText(){
+navigator.clipboard.writeText(generatedText);
+alert("已复制，可以去小红书粘贴发布啦！");
+}
+
+function openXHS(){
+window.location.href="xhsdiscover://";
+}
+
+</script>
+
+</body>
+</html>
