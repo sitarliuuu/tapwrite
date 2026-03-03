@@ -114,7 +114,7 @@
     <button class="secondary" onclick="copyText()">复制文案</button>
     <button onclick="openXHS()">一键跳转到小红书发布</button>
 
-    <div id="result">等待生成…</div>
+    <div id="result">等待生成…生成后尝试自动复制，失败也可手动点“复制文案”</div>
 
     <div class="hint">
       <div>⚠️ 提醒：</div>
@@ -165,7 +165,7 @@
     isGenerating = true;
     document.getElementById("btnGen").disabled = true;
 
-    setStatus("正在生成中...\n（若超过20秒没返回，多为网络/CORS/Key/额度/接口问题）");
+    setStatus("正在生成中...生成后尝试自动复制，失败也可手动点“复制文案”\n");
 
     const prompt = `
 请写一篇适合小红书发布的真实入住体验分享,并且不能忽略以下任何一个要求：
@@ -225,7 +225,6 @@
 
     }catch(e){
       if (e?.name === "AbortError"){
-        setStatus("请求超时（20秒）。\n\n可能原因：网络被拦截 / 接口不可达 / 浏览器跨域限制。\n建议打开 Safari 开发者工具看 Network/Console。");
       } else {
         setStatus("生成失败：" + (e?.message || e));
       }
@@ -246,7 +245,7 @@
       alert("已复制文案 ✅ 打开小红书后可直接粘贴！");
     }catch(e){
       // iOS 在非 https / 权限不足时可能失败
-      alert("复制失败（可能需要 HTTPS 或权限）。\n你可以长按下方内容手动全选复制。");
+      alert("复制失败！\n你可以长按下方内容手动全选复制。");
     }
   }
 
@@ -269,7 +268,6 @@
 
     const tryOpen = () => {
       if (i >= candidates.length){
-        alert("已尝试跳转，但可能因 iOS/小红书限制无法直达发布页。\n已为你复制文案：打开小红书后点“+”发布并粘贴即可。");
         return;
       }
       window.location.href = candidates[i++];
