@@ -407,13 +407,15 @@
   }
   function openMeituan(){
     const shopId = "564151165";
+    const hotelH5Url = "https://i.meituan.com/awp/h5/hotel/poi/deal.html?poiId=" + shopId;
+    const encodedHotelH5Url = encodeURIComponent(hotelH5Url);
 
     const candidates = [
-      "imeituan://www.meituan.com/merchant?id=" + shopId,
-      "imeituan://www.meituan.com/poi?id=" + shopId,
-      "meituan://www.meituan.com/merchant?id=" + shopId,
-      "meituan://www.meituan.com/poi?id=" + shopId,
-      "https://i.meituan.com/poi/" + shopId
+      "imeituan://www.meituan.com/web?url=" + encodedHotelH5Url,
+      "meituan://www.meituan.com/web?url=" + encodedHotelH5Url,
+      hotelH5Url,
+      "imeituan://www.meituan.com/hotel/list?q=" + encodeURIComponent(shopId),
+      "meituan://www.meituan.com/hotel/list?q=" + encodeURIComponent(shopId)
     ];
 
     let i = 0;
