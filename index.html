@@ -409,9 +409,11 @@
     const shopId = "564151165";
 
     const candidates = [
-      "imeituan://www.meituan.com/poi/" + shopId,
-      "meituan://www.meituan.com/poi/" + shopId,
-      "https://www.meituan.com/shop/" + shopId
+      "imeituan://www.meituan.com/merchant?id=" + shopId,
+      "imeituan://www.meituan.com/poi?id=" + shopId,
+      "meituan://www.meituan.com/merchant?id=" + shopId,
+      "meituan://www.meituan.com/poi?id=" + shopId,
+      "https://i.meituan.com/poi/" + shopId
     ];
 
     let i = 0;
