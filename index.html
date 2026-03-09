@@ -337,36 +337,21 @@
   }
 
   function openXHS(){
-    // 先尽量把文案复制好（不阻断跳转）
     if (generatedText.trim()){
       navigator.clipboard.writeText(generatedText).catch(()=>{});
     }
 
-    // iOS：尝试多个 scheme 直达发布页，失败就至少打开小红书
-    const candidates = [
-      "xhsdiscover://post_note?ignore_draft=true",
-      "xhsdiscover://post_note",
-      "xhsdiscover://post",
-      "xhsdiscover://"
-    ];
+    const appUrl = "xhsdiscover://post_note?ignore_draft=true";
 
-    let i = 0;
-    const start = Date.now();
+    const link = document.createElement("a");
+    link.href = appUrl;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
 
-    const tryOpen = () => {
-      if (i >= candidates.length){
-        return;
-      }
-      window.location.href = candidates[i++];
-
-      // 给系统一点时间处理跳转；Safari 可能限制连续多次跳转，所以做短延迟兜底
-      setTimeout(() => {
-        // 如果 2.5 秒内仍停留网页（未切走），继续尝试下一个
-        if (Date.now() - start < 2500) tryOpen();
-      }, 600);
-    };
-
-    tryOpen();
+    setTimeout(() => {
+      link.remove();
+    }, 800);
   }
   function openMeituan(){
     const shopId = "564151165";
