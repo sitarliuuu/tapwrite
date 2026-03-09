@@ -374,14 +374,23 @@
     const encodedHotelH5Url = encodeURIComponent(hotelH5Url);
     const appUrl = "imeituan://www.meituan.com/web?url=" + encodedHotelH5Url;
 
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    iframe.src = appUrl;
-    document.body.appendChild(iframe);
+    const link = document.createElement("a");
+    link.href = appUrl;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
 
     setTimeout(() => {
-      iframe.remove();
-    }, 1200);
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = appUrl;
+      document.body.appendChild(iframe);
+
+      setTimeout(() => {
+        iframe.remove();
+        link.remove();
+      }, 1200);
+    }, 150);
   }
 </script>
 </body>
