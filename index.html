@@ -195,28 +195,24 @@
         <div class="tile">
           <div class="tile-icon icon-xhs">📕</div>
           <h3>发小红书笔记</h3>
-          <p>AI 帮你速写，随意改，一键生成入住分享。</p>
-          <button id="btnGen" onclick="generate()">立即参与</button>
+          <button id="btnGen" onclick="openXHS()">立即参与</button>
         </div>
 
         <div class="tile">
           <div class="tile-icon icon-mt">🟨</div>
           <h3>写美团点评文案</h3>
-          <p>点击后直接打开美团店铺，方便用户快速到店评价。</p>
           <button type="button" onclick="openMeituan()">立即参与</button>
         </div>
 
         <div class="tile">
           <div class="tile-icon icon-dp">🍊</div>
           <h3>写大众点评评价</h3>
-          <p>AI 帮写文案，一键好评，适合门店点评场景。</p>
           <button type="button" onclick="alert('功能开发中')">立即参与</button>
         </div>
 
         <div class="tile">
           <div class="tile-icon icon-dy">🎵</div>
           <h3>写抖音评价</h3>
-          <p>AI 帮写文案，一键好评，轻松生成分享内容。</p>
           <button type="button" onclick="alert('功能开发中')">立即参与</button>
         </div>
 
@@ -376,30 +372,16 @@
     const shopId = "564151165";
     const hotelH5Url = "https://i.meituan.com/awp/h5/hotel/poi/deal.html?poiId=" + shopId;
     const encodedHotelH5Url = encodeURIComponent(hotelH5Url);
+    const appUrl = "imeituan://www.meituan.com/web?url=" + encodedHotelH5Url;
 
-    const candidates = [
-      "imeituan://www.meituan.com/web?url=" + encodedHotelH5Url,
-      "meituan://www.meituan.com/web?url=" + encodedHotelH5Url,
-      hotelH5Url,
-      "imeituan://www.meituan.com/hotel/list?q=" + encodeURIComponent(shopId),
-      "meituan://www.meituan.com/hotel/list?q=" + encodeURIComponent(shopId)
-    ];
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = appUrl;
+    document.body.appendChild(iframe);
 
-    let i = 0;
-    const start = Date.now();
-
-    const tryOpen = () => {
-      if (i >= candidates.length){
-        return;
-      }
-      window.location.href = candidates[i++];
-
-      setTimeout(() => {
-        if (Date.now() - start < 2500) tryOpen();
-      }, 600);
-    };
-
-    tryOpen();
+    setTimeout(() => {
+      iframe.remove();
+    }, 1200);
   }
 </script>
 </body>
