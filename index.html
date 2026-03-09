@@ -171,9 +171,22 @@
 
 <body>
   <div class="page">
-    <section class="hero">
-      <h1>碰一碰 · 领福利</h1>
-      <p>点击立即参与，好礼等你拿</p>
+
+    <section class="panel">
+      <h3 class="panel-title">AI 文案生成区</h3>
+      <p class="panel-desc">可用于小红书、大众点评、抖音、美团等场景，生成后会展示在下方。</p>
+
+      <div id="result">点击下方按钮生成通用文案，生成后可直接复制使用</div>
+
+      <div class="toolbar">
+        <button onclick="generate()">一键生成文案</button>
+      </div>
+
+      <div class="hint">
+        <div>⚠️ 提醒：</div>
+        <div>1) 点击下方“一键生成文案”即可生成通用内容。</div>
+        <div>2) 生成后的文案可按需用于小红书、大众点评、抖音或美团等场景。</div>
+      </div>
     </section>
 
     <section class="panel">
@@ -184,6 +197,13 @@
           <h3>发小红书笔记</h3>
           <p>AI 帮你速写，随意改，一键生成入住分享。</p>
           <button id="btnGen" onclick="generate()">立即参与</button>
+        </div>
+
+        <div class="tile">
+          <div class="tile-icon icon-mt">🟨</div>
+          <h3>写美团点评文案</h3>
+          <p>点击后直接打开美团店铺，方便用户快速到店评价。</p>
+          <button type="button" onclick="openMeituan()">立即参与</button>
         </div>
 
         <div class="tile">
@@ -201,13 +221,6 @@
         </div>
 
         <div class="tile">
-          <div class="tile-icon icon-mt">🟨</div>
-          <h3>写美团点评文案</h3>
-          <p>点击后直接打开美团店铺，方便用户快速到店评价。</p>
-          <button type="button" onclick="openMeituan()">立即参与</button>
-        </div>
-
-        <div class="tile">
           <div class="tile-icon icon-wifi">📶</div>
           <h3>连 WIFI</h3>
           <p>点击复制 WIFI 密码，连接更方便。</p>
@@ -222,28 +235,6 @@
         </div>
       </div>
     </section>
-
-    <section class="panel">
-      <h3 class="panel-title">小红书文案生成区</h3>
-      <p class="panel-desc">生成后会展示在下方，你可以复制文案后再去发布。</p>
-
-      <input id="keyInput" type="password" placeholder="请输入 DeepSeek API Key"/>
-
-      <div class="toolbar">
-        <button class="ghost" onclick="saveKey()">保存 Key</button>
-        <button class="ghost" onclick="clearKey()">清除 Key</button>
-        <button class="secondary" onclick="copyText()">复制文案</button>
-        <button onclick="openXHS()">跳转小红书发布</button>
-      </div>
-
-      <div id="result">等待生成…\n生成后可直接复制，也可以再跳转到小红书发布</div>
-
-      <div class="hint">
-        <div>⚠️ 提醒：</div>
-        <div>1) 先点击上方“小红书”卡片生成文案。</div>
-        <div>2) 生成成功后可手动复制，或再跳转到小红书发布。</div>
-      </div>
-    </section>
   </div>
 <script>
   let generatedText = "";
@@ -253,54 +244,30 @@
     document.getElementById("result").innerText = text;
   }
 
-  function getDeepseekKey(){
-    // 优先读取 window 注入，其次读 localStorage（仅自测）
-    const injected = (window.DEEPSEEK_API_KEY || "").trim();
-    if (injected) return injected;
-
-    const saved = (localStorage.getItem("DEEPSEEK_API_KEY") || "").trim();
-    return saved;
-  }
-
-  function saveKey(){
-    const v = (document.getElementById("keyInput").value || "").trim();
-    if (!v){
-      alert("请先在输入框粘贴 Key。");
-      return;
-    }
-    localStorage.setItem("DEEPSEEK_API_KEY", v);
-  }
-
-  function clearKey(){
-    localStorage.removeItem("DEEPSEEK_API_KEY");
-    document.getElementById("keyInput").value = "";
-  }
-
   async function generate(){
     if (isGenerating) return;
 
-    const apiKey = getDeepseekKey();
-    if (!apiKey){
-      setStatus("未检测到 DeepSeek Key。\n\n方式A：在输入框粘贴后点“保存 Key”\n方式B：控制台执行：window.DEEPSEEK_API_KEY = \"你的key\"");
-      return;
-    }
+    const apiKey = "sk-a1c92c976b554fc8b3b7d55776515597"
 
     isGenerating = true;
     document.getElementById("btnGen").disabled = true;
 
-    setStatus("正在生成中...\n生成完成后可在下方复制文案，或跳转到小红书发布\n");
+    setStatus("正在生成中...\n生成完成后会自动复制\n");
 
     const prompt = `
-请写一篇适合小红书发布的真实入住体验分享,并且不能忽略以下任何一个要求：
+请写一篇适合门店评价、种草分享、短内容发布的真实入住体验文案，并且不能忽略以下任何一个要求：
 
 地点：拉萨
 场景：旅行入住体验
 风格：真实、轻松、有生活感
+要求：内容通用自然，适合小红书、大众点评、抖音、美团等平台使用，可直接复制后按需微调
 
-输出格式：
-吸引人的标题（每个不超过 15 字）
-正文（分段、口吻自然，可带表情,不超过500字）
-推荐标签（#开头，3-5个）
+输出要求：
+直接输出最终可用内容，不要出现“标题”“正文”“推荐标签”“标题备选”等任何说明性小标题。
+开头先给1个自然的标题，下一行空一行后直接接正文。
+正文分段自然，口吻真实轻松，可带少量表情，不超过500字。
+结尾直接补充3-5个标签（#开头），单独一行展示即可。
+整体看起来像可以直接复制发布的成品文案。
 `.trim();
 
     const controller = new AbortController();
@@ -360,7 +327,7 @@
 
   async function copyText(){
     if (!generatedText.trim()){
-      alert("还没有生成内容哦，先点“小红书”卡片里的“立即参与”。");
+      alert("还没有生成内容哦，请先点击“一键生成文案”。");
       return;
     }
 
