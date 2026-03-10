@@ -216,12 +216,12 @@
     <section class="panel">
       <div class="grid">
         <div class="tile" onclick="openXHS()">
-          <div class="tile-icon icon-xhs"><img src="https://cdn.simpleicons.org/xiaohongshu/ff2442" /></div>
+          <div class="tile-icon icon-xhs"><img src="./images/xhs.png" alt="小红书" /></div>
           <h3>小红书</h3>
         </div>
 
         <div class="tile" onclick="alert('功能开发中')">
-          <div class="tile-icon icon-dy"><img src="https://cdn.simpleicons.org/tiktok/000000" /></div>
+          <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="抖音写评论" /></div>
           <h3>抖音写评论</h3>
         </div>
 
@@ -241,17 +241,17 @@
         </div>
 
         <div class="tile" onclick="openMeituan()">
-          <div class="tile-icon icon-mt"><img src="https://cdn.simpleicons.org/meituan/ffd100" /></div>
+          <div class="tile-icon icon-mt"><img src="./images/meituan.png" alt="美团" /></div>
           <h3>美团</h3>
         </div>
 
         <div class="tile" onclick="alert('功能开发中')">
-          <div class="tile-icon icon-channel"><img src="https://www.google.com/s2/favicons?sz=128&domain_url=channels.weixin.qq.com" alt="视频号" /></div>
+          <div class="tile-icon icon-channel"><img src="./images/wx_channel.png" alt="视频号" /></div>
           <h3>关注视频号</h3>
         </div>
 
         <div class="tile" onclick="alert('功能开发中')">
-          <div class="tile-icon icon-dy"><img src="https://cdn.simpleicons.org/tiktok/000000" /></div>
+          <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="关注抖音" /></div>
           <h3>关注抖音</h3>
         </div>
 
@@ -266,12 +266,12 @@
         </div>
 
         <div class="tile" onclick="alert('功能开发中')">
-          <div class="tile-icon icon-wifi"><img src="https://img.icons8.com/ios-filled/100/3b82f6/wifi--v1.png" alt="WIFI" /></div>
+          <div class="tile-icon icon-wifi"><img src="./images/wifi.png" alt="连WIFI" /></div>
           <h3>连WIFI</h3>
         </div>
 
         <div class="tile" onclick="alert('功能开发中')">
-          <div class="tile-icon icon-dp"><img src="https://img.icons8.com/ios-filled/100/8a94b8/more.png" alt="更多" /></div>
+          <div class="tile-icon icon-dp"><img src="./images/more.png" alt="更多" /></div>
           <h3>更多</h3>
         </div>
       </div>
@@ -425,9 +425,8 @@
     }, 150);
   }
   function openCtrip(){
-    const hotelId = "112862059"; // 填写携程酒店ID
-
-    const h5Url = "https://m.ctrip.com/webapp/hotel/hoteldetail/" + hotelId + ".html";
+    const hotelId = "112862059";
+    const h5Url = "https://m.ctrip.com/html5/hotel/hoteldetail/" + hotelId + ".html";
     const encodedUrl = encodeURIComponent(h5Url);
     const appUrl = "ctrip://wireless/webapp?url=" + encodedUrl;
 
