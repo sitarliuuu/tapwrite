@@ -68,7 +68,7 @@
     }
     .grid{
       display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
+      grid-template-columns:repeat(3,minmax(0,1fr));
       gap:16px;
     }
     .tile{
@@ -95,10 +95,13 @@
     }
     .icon-xhs{ background:#ffe8ed; }
     .icon-dp{ background:#fff0e6; }
+    .icon-ctrip{ background:#e8f1ff; }
+    .icon-qunar{ background:#e8f7f7; }
     .icon-dy{ background:#eef1ff; }
     .icon-mt{ background:#fff7cf; }
     .icon-wifi{ background:#e8f3ff; }
     .icon-wx{ background:#e9f9e8; }
+    .icon-channel{ background:#eef6ef; }
     .tile h3{
       margin:0 0 8px;
       font-size:16px;
@@ -179,7 +182,10 @@
     }
     @media (max-width:420px){
       .hero h1{ font-size:28px; }
-      .grid{ gap:12px; }
+      .grid{
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        gap:12px;
+      }
       .tile{ padding:16px 14px; }
     }
   </style>
@@ -211,34 +217,62 @@
       <div class="grid">
         <div class="tile" onclick="openXHS()">
           <div class="tile-icon icon-xhs"><img src="https://cdn.simpleicons.org/xiaohongshu/ff2442" /></div>
-          <h3>发小红书笔记</h3>
-        </div>
-
-        <div class="tile" onclick="openMeituan()">
-          <div class="tile-icon icon-mt"><img src="https://cdn.simpleicons.org/meituan/ffd100" /></div>
-          <h3>写美团点评文案</h3>
-        </div>
-
-        <div class="tile" onclick="alert('功能开发中')">
-          <div class="tile-icon icon-dp"><img src="https://cdn.simpleicons.org/dazhongdianping/ff6633" alt="大众点评" /></div>
-          <h3>写大众点评评价</h3>
+          <h3>小红书</h3>
         </div>
 
         <div class="tile" onclick="alert('功能开发中')">
           <div class="tile-icon icon-dy"><img src="https://cdn.simpleicons.org/tiktok/000000" /></div>
-          <h3>写抖音评价</h3>
+          <h3>抖音写评论</h3>
         </div>
 
         <div class="tile" onclick="alert('功能开发中')">
-          <div class="tile-icon icon-wifi"><img src="https://img.icons8.com/ios-filled/100/3b82f6/wifi--v1.png" alt="WIFI" /></div>
-          <h3>连 WIFI</h3>
-          <p>点击复制 WIFI 密码，连接更方便。</p>
+          <div class="tile-icon icon-wx"><img src="./images/moments.png" alt="发朋友圈" /></div>
+          <h3>发朋友圈</h3>
+        </div>
+
+        <div class="tile" onclick="openCtrip()">
+          <div class="tile-icon icon-ctrip"><img src="./images/ctrip.png" alt="携程" /></div>
+          <h3>携程</h3>
+        </div>
+
+        <div class="tile" onclick="alert('功能开发中')">
+          <div class="tile-icon icon-qunar"><img src="./images/qunar.png" alt="去哪儿" /></div>
+          <h3>去哪儿</h3>
+        </div>
+
+        <div class="tile" onclick="openMeituan()">
+          <div class="tile-icon icon-mt"><img src="https://cdn.simpleicons.org/meituan/ffd100" /></div>
+          <h3>美团</h3>
+        </div>
+
+        <div class="tile" onclick="alert('功能开发中')">
+          <div class="tile-icon icon-channel"><img src="https://www.google.com/s2/favicons?sz=128&domain_url=channels.weixin.qq.com" alt="视频号" /></div>
+          <h3>关注视频号</h3>
+        </div>
+
+        <div class="tile" onclick="alert('功能开发中')">
+          <div class="tile-icon icon-dy"><img src="https://cdn.simpleicons.org/tiktok/000000" /></div>
+          <h3>关注抖音</h3>
+        </div>
+
+        <div class="tile" onclick="alert('功能开发中')">
+          <div class="tile-icon icon-wx"><img src="./images/miniapp.png" alt="小程序" /></div>
+          <h3>小程序</h3>
         </div>
 
         <div class="tile" onclick="alert('功能开发中')">
           <div class="tile-icon icon-wx"><img src="https://cdn.simpleicons.org/wechat/07C160" /></div>
           <h3>加微信</h3>
-          <p>添加店员微信，领取更多到店福利。</p>
+        </div>
+
+        <div class="tile" onclick="alert('功能开发中')">
+          <div class="tile-icon icon-wifi"><img src="https://img.icons8.com/ios-filled/100/3b82f6/wifi--v1.png" alt="WIFI" /></div>
+          <h3>连WIFI</h3>
+        </div>
+
+        <div class="tile" onclick="alert('功能开发中')">
+          <div class="tile-icon icon-dp"><img src="https://img.icons8.com/ios-filled/100/8a94b8/more.png" alt="更多" /></div>
+          <h3>更多</h3>
         </div>
       </div>
     </section>
@@ -371,6 +405,31 @@
     const hotelH5Url = "https://i.meituan.com/awp/h5/hotel/poi/deal.html?poiId=" + shopId;
     const encodedHotelH5Url = encodeURIComponent(hotelH5Url);
     const appUrl = "imeituan://www.meituan.com/web?url=" + encodedHotelH5Url;
+
+    const link = document.createElement("a");
+    link.href = appUrl;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+
+    setTimeout(() => {
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = appUrl;
+      document.body.appendChild(iframe);
+
+      setTimeout(() => {
+        iframe.remove();
+        link.remove();
+      }, 1200);
+    }, 150);
+  }
+  function openCtrip(){
+    const hotelId = "112862059"; // 填写携程酒店ID
+
+    const h5Url = "https://m.ctrip.com/webapp/hotel/hoteldetail/" + hotelId + ".html";
+    const encodedUrl = encodeURIComponent(h5Url);
+    const appUrl = "ctrip://wireless/webapp?url=" + encodedUrl;
 
     const link = document.createElement("a");
     link.href = appUrl;
