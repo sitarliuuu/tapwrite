@@ -180,6 +180,171 @@
       font-weight:700;
       color:#32406d;
     }
+    .wx-mask{
+      position:fixed;
+      inset:0;
+      background:linear-gradient(180deg,#f4f4f6 0%,#eef1f7 100%);
+      display:none;
+      align-items:flex-start;
+      justify-content:center;
+      padding:88px 24px 40px;
+      z-index:9999;
+    }
+    .wx-mask.show{ display:flex; }
+    .wx-mask-inner{
+      width:100%;
+      max-width:420px;
+      text-align:center;
+      position:relative;
+      color:#2f2f2f;
+    }
+    .wx-mask-close{
+      position:absolute;
+      left:0;
+      top:-4px;
+      width:44px;
+      height:44px;
+      border:none;
+      background:transparent;
+      color:#555;
+      font-size:34px;
+      line-height:44px;
+      padding:0;
+      margin:0;
+      cursor:pointer;
+    }
+    .wx-mask-more{
+      position:absolute;
+      right:0;
+      top:2px;
+      width:48px;
+      height:36px;
+      border:none;
+      border-radius:12px;
+      background:#e5e5e7;
+      color:#666;
+      font-size:24px;
+      line-height:36px;
+      padding:0;
+      margin:0;
+      cursor:default;
+    }
+    .wx-mask-title{
+      margin:118px 0 18px;
+      font-size:30px;
+      line-height:1.2;
+      font-weight:700;
+      color:#2f2f2f;
+    }
+    .wx-mask-desc{
+      margin:0;
+      font-size:17px;
+      line-height:1.9;
+      color:#4a4a4a;
+    }
+    .wx-mask-desc .highlight{
+      color:#1677ff;
+      font-weight:600;
+    }
+    .wx-arrow{
+      position:absolute;
+      right:20px;
+      top:84px;
+      width:96px;
+      height:180px;
+      pointer-events:none;
+    }
+    .wx-phone{
+      width:220px;
+      height:450px;
+      margin:34px auto 0;
+      border:10px solid rgba(255,255,255,.9);
+      border-radius:38px;
+      position:relative;
+      background:rgba(255,255,255,.22);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);
+    }
+    .wx-phone-notch{
+      position:absolute;
+      left:50%;
+      top:0;
+      transform:translateX(-50%);
+      width:92px;
+      height:18px;
+      background:rgba(255,255,255,.92);
+      border-radius:0 0 14px 14px;
+    }
+    .wx-phone-sheet{
+      position:absolute;
+      left:12px;
+      right:12px;
+      bottom:16px;
+      height:150px;
+      border-radius:24px;
+      background:rgba(255,255,255,.28);
+    }
+    .wx-phone-grid{
+      position:absolute;
+      left:26px;
+      right:26px;
+      bottom:42px;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:14px;
+    }
+    .wx-phone-grid span{
+      display:block;
+      height:38px;
+      border-radius:8px;
+      background:rgba(255,255,255,.48);
+    }
+    .wx-phone-focus{
+      position:absolute;
+      left:50%;
+      bottom:96px;
+      transform:translateX(-50%);
+      width:144px;
+      height:144px;
+      border-radius:50%;
+      border:8px solid rgba(255,255,255,.75);
+      background:rgba(255,255,255,.18);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .wx-phone-focus-inner{
+      width:88px;
+      text-align:center;
+      color:#4a4a4a;
+      font-size:14px;
+      line-height:1.35;
+      font-weight:600;
+    }
+    .wx-browser-icon{
+      width:44px;
+      height:44px;
+      margin:0 auto 8px;
+      border-radius:14px;
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 4px 12px rgba(0,0,0,.06);
+      font-size:24px;
+    }
+    .wx-mask-bottom-close{
+      width:54px;
+      height:54px;
+      margin:34px auto 0;
+      border-radius:50%;
+      border:2px solid #cfcfd3;
+      background:transparent;
+      color:#b0b0b5;
+      font-size:28px;
+      line-height:50px;
+      padding:0;
+      cursor:pointer;
+    }
     @media (max-width:420px){
       .hero h1{ font-size:28px; }
       .grid{
@@ -220,12 +385,12 @@
           <h3>小红书</h3>
         </div>
 
-        <div class="tile" onclick="alert('功能开发中')">
+        <div class="tile" onclick="showWechatGuide()">
           <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="抖音写评论" /></div>
           <h3>抖音写评论</h3>
         </div>
 
-        <div class="tile" onclick="alert('功能开发中')">
+        <div class="tile" onclick="showWechatGuide()">
           <div class="tile-icon icon-wx"><img src="./images/moments.png" alt="发朋友圈" /></div>
           <h3>发朋友圈</h3>
         </div>
@@ -235,7 +400,7 @@
           <h3>携程</h3>
         </div>
 
-        <div class="tile" onclick="alert('功能开发中')">
+        <div class="tile" onclick="showWechatGuide()">
           <div class="tile-icon icon-qunar"><img src="./images/qunar.png" alt="去哪儿" /></div>
           <h3>去哪儿</h3>
         </div>
@@ -245,41 +410,104 @@
           <h3>美团</h3>
         </div>
 
-        <div class="tile" onclick="alert('功能开发中')">
+        <div class="tile" onclick="showWechatGuide()">
           <div class="tile-icon icon-channel"><img src="./images/wx_channel.png" alt="视频号" /></div>
           <h3>关注视频号</h3>
         </div>
 
-        <div class="tile" onclick="alert('功能开发中')">
+        <div class="tile" onclick="showWechatGuide()">
           <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="关注抖音" /></div>
           <h3>关注抖音</h3>
         </div>
 
-        <div class="tile" onclick="alert('功能开发中')">
+        <div class="tile" onclick="showWechatGuide()">
           <div class="tile-icon icon-wx"><img src="./images/miniapp.png" alt="小程序" /></div>
           <h3>小程序</h3>
         </div>
 
-        <div class="tile" onclick="alert('功能开发中')">
+        <div class="tile" onclick="showWechatGuide()">
           <div class="tile-icon icon-wx"><img src="./images/wechat.png" alt="加微信" /></div>
           <h3>加微信</h3>
         </div>
 
-        <div class="tile" onclick="alert('功能开发中')">
+        <div class="tile" onclick="showWechatGuide()">
           <div class="tile-icon icon-wifi"><img src="./images/wifi.png" alt="连WIFI" /></div>
           <h3>连WIFI</h3>
         </div>
 
-        <div class="tile" onclick="alert('功能开发中')">
+        <div class="tile" onclick="showWechatGuide()">
           <div class="tile-icon icon-dp"><img src="./images/more.png" alt="更多" /></div>
           <h3>更多</h3>
         </div>
       </div>
     </section>
   </div>
+
+  <div id="wechatMask" class="wx-mask" aria-hidden="true">
+    <div class="wx-mask-inner">
+      <button class="wx-mask-close" type="button" onclick="hideWechatGuide()">×</button>
+      <button class="wx-mask-more" type="button" aria-label="更多">···</button>
+
+      <svg class="wx-arrow" viewBox="0 0 120 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M20 190C20 132 42 112 76 108C108 104 111 72 108 24" stroke="#b9bbc3" stroke-width="3" stroke-linecap="round" stroke-dasharray="9 10"/>
+        <path d="M100 34L108 18L116 34" stroke="#b9bbc3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+
+      <h2 class="wx-mask-title">还差1步得好礼</h2>
+      <p class="wx-mask-desc">
+        由于微信限制，请点击右上角 <span style="display:inline-block;background:#e5e5e7;color:#666;border-radius:10px;padding:0 10px;line-height:1.5;">···</span><br>
+        选择 <span class="highlight">“在浏览器打开”</span>
+      </p>
+
+      <div class="wx-phone" aria-hidden="true">
+        <div class="wx-phone-notch"></div>
+        <div class="wx-phone-sheet"></div>
+        <div class="wx-phone-grid">
+          <span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="wx-phone-focus">
+          <div class="wx-phone-focus-inner">
+            <div class="wx-browser-icon">🌐</div>
+            在浏览器打开
+          </div>
+        </div>
+      </div>
+
+      <button class="wx-mask-bottom-close" type="button" onclick="hideWechatGuide()">×</button>
+    </div>
+  </div>
 <script>
   let generatedText = "";
   let isGenerating = false;
+
+  function isWeChatBrowser(){
+    return /MicroMessenger/i.test(window.navigator.userAgent || "");
+  }
+
+  function showWechatGuide(){
+    const mask = document.getElementById("wechatMask");
+    if (!mask) return;
+    mask.classList.add("show");
+    mask.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+
+  function hideWechatGuide(){
+    const mask = document.getElementById("wechatMask");
+    if (!mask) return;
+    mask.classList.remove("show");
+    mask.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
+
+  function guardWechatOpen(action){
+    if (isWeChatBrowser()){
+      showWechatGuide();
+      return;
+    }
+    action();
+  }
 
   function setStatus(text){
     const resultEl = document.getElementById("result");
@@ -384,77 +612,83 @@
   }
 
   function openXHS(){
-    if (generatedText.trim()){
-      navigator.clipboard.writeText(generatedText).catch(()=>{});
-    }
+    guardWechatOpen(() => {
+      if (generatedText.trim()){
+        navigator.clipboard.writeText(generatedText).catch(()=>{});
+      }
 
-    const appUrl = "xhsdiscover://post_note?ignore_draft=true";
+      const appUrl = "xhsdiscover://post_note?ignore_draft=true";
 
-    const link = document.createElement("a");
-    link.href = appUrl;
-    link.style.display = "none";
-    document.body.appendChild(link);
-    link.click();
-
-    setTimeout(() => {
-      link.remove();
-    }, 800);
-  }
-  function openMeituan(){
-    const shopId = "564151165";
-    const hotelH5Url = "https://i.meituan.com/awp/h5/hotel/poi/deal.html?poiId=" + shopId;
-    const encodedHotelH5Url = encodeURIComponent(hotelH5Url);
-    const appUrl = "imeituan://www.meituan.com/web?url=" + encodedHotelH5Url;
-
-    const link = document.createElement("a");
-    link.href = appUrl;
-    link.style.display = "none";
-    document.body.appendChild(link);
-    link.click();
-
-    setTimeout(() => {
-      const iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      iframe.src = appUrl;
-      document.body.appendChild(iframe);
+      const link = document.createElement("a");
+      link.href = appUrl;
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.click();
 
       setTimeout(() => {
-        iframe.remove();
         link.remove();
-      }, 1200);
-    }, 150);
+      }, 800);
+    });
+  }
+  function openMeituan(){
+    guardWechatOpen(() => {
+      const shopId = "564151165";
+      const hotelH5Url = "https://i.meituan.com/awp/h5/hotel/poi/deal.html?poiId=" + shopId;
+      const encodedHotelH5Url = encodeURIComponent(hotelH5Url);
+      const appUrl = "imeituan://www.meituan.com/web?url=" + encodedHotelH5Url;
+
+      const link = document.createElement("a");
+      link.href = appUrl;
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.click();
+
+      setTimeout(() => {
+        const iframe = document.createElement("iframe");
+        iframe.style.display = "none";
+        iframe.src = appUrl;
+        document.body.appendChild(iframe);
+
+        setTimeout(() => {
+          iframe.remove();
+          link.remove();
+        }, 1200);
+      }, 150);
+    });
   }
   function openCtrip(){
-    const hotelId = "112862059";
-    const h5Url = "https://m.ctrip.com/webapp/hotel/hoteldetail/" + hotelId + ".html";
-    const encodedH5ForApp = btoa(unescape(encodeURIComponent(h5Url)));
-    const appUrl = "ctrip://wireless/h5?url=" + encodedH5ForApp + "&type=2";
-    const start = Date.now();
+    guardWechatOpen(() => {
+      const hotelId = "112862059";
+      const h5Url = "https://m.ctrip.com/webapp/hotel/hoteldetail/" + hotelId + ".html";
+      const encodedH5ForApp = btoa(unescape(encodeURIComponent(h5Url)));
+      const appUrl = "ctrip://wireless/h5?url=" + encodedH5ForApp + "&type=2";
+      const start = Date.now();
 
-    const fallbackTimer = setTimeout(() => {
-      if (Date.now() - start < 1800) {
-        window.location.href = h5Url;
-      }
-    }, 1200);
+      const fallbackTimer = setTimeout(() => {
+        if (Date.now() - start < 1800) {
+          window.location.href = h5Url;
+        }
+      }, 1200);
 
-    const clearFallback = () => {
-      clearTimeout(fallbackTimer);
-      document.removeEventListener("visibilitychange", onVisibilityChange);
-      window.removeEventListener("pagehide", clearFallback);
-      window.removeEventListener("blur", clearFallback);
-    };
+      const clearFallback = () => {
+        clearTimeout(fallbackTimer);
+        document.removeEventListener("visibilitychange", onVisibilityChange);
+        window.removeEventListener("pagehide", clearFallback);
+        window.removeEventListener("blur", clearFallback);
+      };
 
-    const onVisibilityChange = () => {
-      if (document.hidden) {
-        clearFallback();
-      }
-    };
+      const onVisibilityChange = () => {
+        if (document.hidden) {
+          clearFallback();
+        }
+      };
 
-    document.addEventListener("visibilitychange", onVisibilityChange);
-    window.addEventListener("pagehide", clearFallback, { once: true });
-    window.addEventListener("blur", clearFallback, { once: true });
+      document.addEventListener("visibilitychange", onVisibilityChange);
+      window.addEventListener("pagehide", clearFallback, { once: true });
+      window.addEventListener("blur", clearFallback, { once: true });
 
-    window.location.href = appUrl;
+      window.location.href = appUrl;
+    });
   }
 </script>
 </body>
