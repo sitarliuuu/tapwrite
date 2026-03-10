@@ -129,15 +129,36 @@
       color:#fff;
     }
     button.secondary{ background:#111; }
-    button.ghost{
+    .copy-icon-btn{
+      display:none;
+      width:42px;
+      height:42px;
+      padding:0;
+      margin-top:0;
+      border:none;
+      border-radius:10px;
       background:#fff;
       color:#ff2442;
       border:1px solid #ff2442;
+      font-size:0;
+      line-height:1;
+      align-items:center;
+      justify-content:center;
+      justify-self:end;
+    }
+    .copy-icon-btn.show{
+      display:inline-flex;
+    }
+    .copy-icon-img{
+      width:20px;
+      height:20px;
+      object-fit:contain;
+      display:block;
     }
     button:disabled{ opacity:.6; }
     .toolbar{
       display:grid;
-      grid-template-columns:1fr;
+      grid-template-columns:1fr auto;
       gap:10px;
       margin-top:12px;
     }
@@ -361,6 +382,16 @@
       }
     }
     @media (max-width:420px){
+      .platform-confirm-card{
+        border-radius:20px;
+        padding:22px 18px 18px;
+      }
+      .platform-confirm-title{
+        font-size:18px;
+      }
+      .platform-confirm-desc{
+        font-size:13px;
+      }
       .hero h1{ font-size:28px; }
       .grid{
         grid-template-columns:repeat(3,minmax(0,1fr));
@@ -378,18 +409,28 @@
         margin-bottom:22px;
       }
         .wifi-info-row {
-            min-height: 68px;
-            padding: 0 16px;
-            gap: 10px;
+            min-height: 60px;
+            padding: 0 14px;
+            gap: 8px;
         }
         .wifi-info-icon {
-            width: 28px;
-            flex-basis: 28px;
-            font-size: 18px;
+            width: 24px;
+            flex-basis: 24px;
+            font-size: 16px;
         }
         .wifi-info-text {
-            font-size: 13px;
+            font-size: 12px;
         }
+      .copy-icon-btn{
+        width:36px;
+        height:36px;
+        font-size:0;
+        border-radius:9px;
+      }
+      .copy-icon-img{
+        width:18px;
+        height:18px;
+      }
       .wifi-copy-badge{
         min-width:78px;
         height:44px;
@@ -413,6 +454,56 @@
           max-width:280px;
           border-radius:14px;
         }
+    }
+
+    .platform-confirm-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.42);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      z-index:10001;
+    }
+    .platform-confirm-overlay.show{
+      display:flex;
+    }
+    .platform-confirm-card{
+      width:100%;
+      max-width:420px;
+      background:#fff;
+      border-radius:24px;
+      padding:26px 22px 22px;
+      text-align:center;
+      box-shadow:0 18px 50px rgba(0,0,0,.18);
+    }
+    .platform-confirm-title{
+      margin:0 0 10px;
+      font-size:20px;
+      line-height:1.4;
+      color:#111;
+      font-weight:700;
+    }
+    .platform-confirm-desc{
+      margin:0;
+      font-size:14px;
+      line-height:1.75;
+      color:#666;
+      white-space:pre-line;
+    }
+    .platform-confirm-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:18px;
+    }
+    .platform-confirm-actions button{
+      margin-top:0;
+    }
+    .platform-confirm-cancel{
+      background:#f3f4f7;
+      color:#333;
     }
 
     .wifi-modal {
@@ -446,27 +537,27 @@
       font-weight: 600;
     }
     .wifi-info-row {
-      min-height: 92px;
+      min-height: 76px;
       border-radius: 20px;
       background: #fff;
       display: flex;
       align-items: center;
-      gap: 18px;
-      padding: 0 24px;
-      margin-bottom: 18px;
+      gap: 12px;
+      padding: 0 18px;
+      margin-bottom: 14px;
     }
     .wifi-password-row {
       margin-bottom: 0;
     }
     .wifi-info-icon {
-      width: 42px;
+      width: 32px;
       text-align: center;
-      font-size: 30px;
+      font-size: 22px;
       line-height: 1;
-      flex: 0 0 42px;
+      flex: 0 0 32px;
     }
     .wifi-info-text {
-      font-size: 22px;
+      font-size: 16px;
       line-height: 1.4;
       color: #222;
       word-break: break-all;
@@ -543,6 +634,7 @@
 
       <div class="toolbar">
         <button id="btnGen" onclick="generate()">一键生成内容</button>
+        <button id="btnCopy" class="copy-icon-btn" onclick="copyText()" aria-label="复制文案" title="复制文案"><img src="./images/copy.png" alt="复制文案" class="copy-icon-img" /></button>
       </div>
 
       <div class="hint">
@@ -555,12 +647,12 @@
 
     <section class="panel">
       <div class="grid">
-        <div class="tile" onclick="openXHS()">
+        <div class="tile" onclick="handlePlatformClick('xhs')">
           <div class="tile-icon icon-xhs"><img src="./images/xhs.png" alt="小红书" /></div>
           <h3>小红书</h3>
         </div>
 
-        <div class="tile" onclick="openDouyin()">
+        <div class="tile" onclick="handlePlatformClick('douyin')">
           <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="抖音写评论" /></div>
           <h3>抖音写评论</h3>
         </div>
@@ -569,17 +661,17 @@
           <h3>发朋友圈</h3>
         </div>
 
-        <div class="tile" onclick="openCtrip()">
+        <div class="tile" onclick="handlePlatformClick('ctrip')">
           <div class="tile-icon icon-ctrip"><img src="./images/ctrip.png" alt="携程" /></div>
           <h3>携程</h3>
         </div>
 
-        <div class="tile" onclick="handleRestrictedEntry()">
+        <div class="tile" onclick="handlePlatformClick('qunar')">
           <div class="tile-icon icon-qunar"><img src="./images/qunar.png" alt="去哪儿" /></div>
           <h3>去哪儿</h3>
         </div>
 
-        <div class="tile" onclick="openMeituan()">
+        <div class="tile" onclick="handlePlatformClick('meituan')">
           <div class="tile-icon icon-mt"><img src="./images/meituan.png" alt="美团" /></div>
           <h3>美团</h3>
         </div>
@@ -610,6 +702,17 @@
         </div>
       </div>
     </section>
+  </div>
+
+  <div id="platformConfirmModal" class="platform-confirm-overlay" aria-hidden="true">
+    <div class="platform-confirm-card">
+      <h2 class="platform-confirm-title" id="platformConfirmTitle">文案已复制</h2>
+      <p class="platform-confirm-desc" id="platformConfirmDesc">你现在可以前往对应平台粘贴发布。</p>
+      <div class="platform-confirm-actions">
+        <button type="button" class="platform-confirm-cancel" onclick="hidePlatformConfirm()">取消</button>
+        <button type="button" id="platformConfirmGoBtn" onclick="confirmPlatformJump()">前往平台</button>
+      </div>
+    </div>
   </div>
 
   <div id="wechatMask" class="wx-mask" aria-hidden="true">
@@ -682,6 +785,8 @@
 <script>
   let generatedText = "";
   let isGenerating = false;
+  let selectedPlatform = "xhs";
+  let pendingPlatform = "";
 
   function isWeChatBrowser(){
     return /MicroMessenger/i.test(window.navigator.userAgent || "");
@@ -748,21 +853,21 @@
   }
 
   function hideWifiModal() {
-      const modal = document.getElementById("wifiModal");
-      if (!modal) return;
-      modal.classList.remove("show");
-      modal.setAttribute("aria-hidden", "true");
-      document.body.style.overflow = "";
+    const modal = document.getElementById("wifiModal");
+    if (!modal) return;
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
   }
 
   function openWechatQrModal() {
-      return guardWechatOpen(() => {
-          const modal = document.getElementById("wechatQrModal");
-          if (!modal) return;
-          modal.classList.add("show");
-          modal.setAttribute("aria-hidden", "false");
-          document.body.style.overflow = "hidden";
-      });
+    return guardWechatOpen(() => {
+      const modal = document.getElementById("wechatQrModal");
+      if (!modal) return;
+      modal.classList.add("show");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    });
   }
 
   function openMiniProgram(){
@@ -772,13 +877,13 @@
     });
   }
 
-function hideWechatQrModal(){
-  const modal = document.getElementById("wechatQrModal");
-  if (!modal) return;
-  modal.classList.remove("show");
-  modal.setAttribute("aria-hidden", "true");
-  document.body.style.overflow = "";
-}
+  function hideWechatQrModal(){
+    const modal = document.getElementById("wechatQrModal");
+    if (!modal) return;
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
 
   function setStatus(text){
     const resultEl = document.getElementById("result");
@@ -786,23 +891,80 @@ function hideWechatQrModal(){
     resultEl.innerText = text;
   }
 
-  async function generate(){
+  function setSelectedPlatform(platform){
+    selectedPlatform = platform;
+  }
+
+  function showPlatformConfirm(platform){
+    const modal = document.getElementById("platformConfirmModal");
+    const titleEl = document.getElementById("platformConfirmTitle");
+    const descEl = document.getElementById("platformConfirmDesc");
+    const goBtn = document.getElementById("platformConfirmGoBtn");
+    const label = getPlatformLabel(platform);
+
+    pendingPlatform = platform;
+
+    if (titleEl) titleEl.innerText = "文案已复制";
+    if (descEl) descEl.innerText = `已为你生成并复制${label}文案\n现在可以直接前往${label}粘贴发布。`;
+    if (goBtn) goBtn.innerText = platform === "qunar" ? "知道了" : `前往${label}`;
+
+    if (!modal) return;
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+
+  function hidePlatformConfirm(){
+    const modal = document.getElementById("platformConfirmModal");
+    if (!modal) return;
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
+
+  function confirmPlatformJump(){
+    const platform = pendingPlatform || selectedPlatform;
+    hidePlatformConfirm();
+
+    if (platform === "xhs") return openXHS();
+    if (platform === "douyin") return openDouyin();
+    if (platform === "ctrip") return openCtrip();
+    if (platform === "meituan") return openMeituan();
+    if (platform === "qunar") {
+      alert("去哪儿跳转功能正在开发中…");
+      return;
+    }
+  }
+
+  async function handlePlatformClick(platform){
     if (isGenerating) return;
+    setSelectedPlatform(platform);
+    const ok = await generate(true);
+    if (ok) {
+      showPlatformConfirm(platform);
+    }
+  }
 
-    const apiKey = "sk-a1c92c976b554fc8b3b7d55776515597"
+  function getPlatformLabel(platform){
+    const map = {
+      xhs: "小红书",
+      qunar: "去哪儿",
+      douyin: "抖音",
+      meituan: "美团",
+      ctrip: "携程"
+    };
+    return map[platform] || "当前平台";
+  }
 
-    isGenerating = true;
-    document.getElementById("btnGen").disabled = true;
-
-    setStatus("正在生成中...\n正在为你的入住分享和点评场景生成内容\n");
-
-    const prompt = `
+  function buildPromptByPlatform(platform){
+    if (platform === "xhs") {
+      return `
 请写一篇适合门店评价、种草分享、短内容发布的真实入住体验文案，并且不能忽略以下任何一个要求：
 
 地点：拉萨
 场景：旅行入住体验
 风格：真实、轻松、有生活感
-要求：内容通用自然，适合小红书、大众点评、抖音、美团等平台使用，可直接复制后按需微调
+要求：内容通用自然，适合小红书平台发布，可直接复制后按需微调
 
 输出要求：
 直接输出最终可用内容，不要出现“标题”“正文”“推荐标签”“标题备选”等任何说明性小标题。
@@ -811,6 +973,37 @@ function hideWechatQrModal(){
 结尾直接补充3-5个标签（#开头），单独一行展示即可。
 整体看起来像可以直接复制发布的成品文案。
 `.trim();
+    }
+
+    return `
+请写一段适合酒店点评或短评发布的真实入住体验文案，并且不能忽略以下任何一个要求：
+
+地点：拉萨
+场景：旅行入住体验
+风格：真实、自然、简洁、有生活感
+适用平台：去哪儿、抖音、美团、携程
+
+输出要求：
+只输出最终可直接发布的正文，不要标题，不要标签，不要分段，不要引号，不要解释说明。
+字数限制在30到60字之间。
+内容要像真实住客写的简短好评，语言自然，不要过度夸张。
+`.trim();
+  }
+
+  async function generate(silentCopy = false){
+    if (isGenerating) return;
+
+    const apiKey = "sk-a1c92c976b554fc8b3b7d55776515597";
+
+    isGenerating = true;
+    document.getElementById("btnGen").disabled = true;
+    document.getElementById("btnCopy").disabled = true;
+    document.getElementById("btnCopy").classList.remove("show");
+
+    const platformLabel = getPlatformLabel(selectedPlatform);
+    setStatus(`正在生成中...\n正在为${platformLabel}生成适配文案\n`);
+
+    const prompt = buildPromptByPlatform(selectedPlatform);
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 20000);
@@ -833,12 +1026,11 @@ function hideWechatQrModal(){
 
       clearTimeout(timeoutId);
 
-      // 不是 2xx：把返回体展示出来（定位 401/403/429 非常关键）
       if (!res.ok){
         let bodyText = "";
         try { bodyText = await res.text(); } catch(e) {}
         setStatus(`请求失败：HTTP ${res.status} ${res.statusText}\n\n${bodyText}`);
-        return;
+        return false;
       }
 
       const data = await res.json();
@@ -846,14 +1038,15 @@ function hideWechatQrModal(){
 
       if (!content){
         setStatus("请求成功但没有拿到 content。\n\n返回：\n" + JSON.stringify(data, null, 2));
-        return;
+        return false;
       }
 
       generatedText = content;
       setStatus(generatedText);
+      document.getElementById("btnCopy").classList.add("show");
 
-      // 生成成功后：尝试自动复制一次（iOS 可能因权限失败，不影响后续手动复制）
-      try { await navigator.clipboard.writeText(generatedText); } catch(e) {}
+      if (silentCopy) { try { await navigator.clipboard.writeText(generatedText); } catch(e) {} }
+      return true;
 
     }catch(e){
       if (e?.name === "AbortError"){
@@ -861,9 +1054,11 @@ function hideWechatQrModal(){
       } else {
         setStatus("生成失败：" + (e?.message || e));
       }
+      return false;
     }finally{
       isGenerating = false;
       document.getElementById("btnGen").disabled = false;
+      document.getElementById("btnCopy").disabled = false;
     }
   }
 
@@ -875,9 +1070,8 @@ function hideWechatQrModal(){
 
     try{
       await navigator.clipboard.writeText(generatedText);
-      alert("已复制文案 ✅ 打开小红书后可直接粘贴！");
+      alert("文案已复制 ✅");
     }catch(e){
-      // iOS 在非 https / 权限不足时可能失败
       alert("复制失败！\n你可以长按下方内容手动全选复制。");
     }
   }
@@ -978,6 +1172,7 @@ function hideWechatQrModal(){
       }, 800);
     });
   }
+
   function openMeituan(){
     guardWechatOpen(() => {
       const shopId = "564151165";
@@ -1004,6 +1199,7 @@ function hideWechatQrModal(){
       }, 150);
     });
   }
+
   function openCtrip(){
     guardWechatOpen(() => {
       const hotelId = "112862059";
