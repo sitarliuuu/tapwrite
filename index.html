@@ -426,27 +426,35 @@
   }
   function openCtrip(){
     const hotelId = "112862059";
-    const h5Url = "https://m.ctrip.com/html5/hotel/hoteldetail/" + hotelId + ".html";
-    const encodedUrl = encodeURIComponent(h5Url);
-    const appUrl = "ctrip://wireless/webapp?url=" + encodedUrl;
+    const h5Url = "https://m.ctrip.com/webapp/hotel/hoteldetail/" + hotelId + ".html";
+    const encodedH5ForApp = btoa(unescape(encodeURIComponent(h5Url)));
+    const appUrl = "ctrip://wireless/h5?url=" + encodedH5ForApp + "&type=2";
+    const start = Date.now();
 
-    const link = document.createElement("a");
-    link.href = appUrl;
-    link.style.display = "none";
-    document.body.appendChild(link);
-    link.click();
+    const fallbackTimer = setTimeout(() => {
+      if (Date.now() - start < 1800) {
+        window.location.href = h5Url;
+      }
+    }, 1200);
 
-    setTimeout(() => {
-      const iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      iframe.src = appUrl;
-      document.body.appendChild(iframe);
+    const clearFallback = () => {
+      clearTimeout(fallbackTimer);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("pagehide", clearFallback);
+      window.removeEventListener("blur", clearFallback);
+    };
 
-      setTimeout(() => {
-        iframe.remove();
-        link.remove();
-      }, 1200);
-    }, 150);
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        clearFallback();
+      }
+    };
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("pagehide", clearFallback, { once: true });
+    window.addEventListener("blur", clearFallback, { once: true });
+
+    window.location.href = appUrl;
   }
 </script>
 </body>
