@@ -400,7 +400,7 @@
           <h3>小红书</h3>
         </div>
 
-        <div class="tile" onclick="handleRestrictedEntry()">
+        <div class="tile" onclick="openDouyin()">
           <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="抖音写评论" /></div>
           <h3>抖音写评论</h3>
         </div>
@@ -627,6 +627,40 @@
       // iOS 在非 https / 权限不足时可能失败
       alert("复制失败！\n你可以长按下方内容手动全选复制。");
     }
+  }
+
+  function openDouyin(){
+    guardWechatOpen(() => {
+      // 把这里替换成你的抖音店铺落地页链接，打开时会优先唤起抖音 App，失败则回退到网页
+      const douyinStoreWebUrl = "https://v.douyin.com/XG7sccO6yfc/";
+      const douyinStoreAppUrl = "snssdk1128://webview?url=" + encodeURIComponent(douyinStoreWebUrl);
+      const start = Date.now();
+
+      const fallbackTimer = setTimeout(() => {
+        if (Date.now() - start < 1800) {
+          window.location.href = douyinStoreWebUrl;
+        }
+      }, 1200);
+
+      const clearFallback = () => {
+        clearTimeout(fallbackTimer);
+        document.removeEventListener("visibilitychange", onVisibilityChange);
+        window.removeEventListener("pagehide", clearFallback);
+        window.removeEventListener("blur", clearFallback);
+      };
+
+      const onVisibilityChange = () => {
+        if (document.hidden) {
+          clearFallback();
+        }
+      };
+
+      document.addEventListener("visibilitychange", onVisibilityChange);
+      window.addEventListener("pagehide", clearFallback, { once: true });
+      window.addEventListener("blur", clearFallback, { once: true });
+
+      window.location.href = douyinStoreAppUrl;
+    });
   }
 
   function openXHS(){
