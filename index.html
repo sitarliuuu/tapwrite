@@ -189,6 +189,7 @@
       justify-content:center;
       padding:88px 24px 40px;
       z-index:9999;
+      overflow:auto;
     }
     .wx-mask.show{ display:flex; }
     .wx-mask-inner{
@@ -197,21 +198,10 @@
       text-align:center;
       position:relative;
       color:#2f2f2f;
+      transform:translateY(-10%);
     }
     .wx-mask-close{
-      position:absolute;
-      left:0;
-      top:-4px;
-      width:44px;
-      height:44px;
-      border:none;
-      background:transparent;
-      color:#555;
-      font-size:34px;
-      line-height:44px;
-      padding:0;
-      margin:0;
-      cursor:pointer;
+      display:none;
     }
     .wx-mask-more{
       position:absolute;
@@ -337,13 +327,21 @@
       height:54px;
       margin:34px auto 0;
       border-radius:50%;
-      border:2px solid #cfcfd3;
+      border:2px solid #8f8f94;
       background:transparent;
-      color:#b0b0b5;
+      color:#5a5a5f;
       font-size:28px;
       line-height:50px;
       padding:0;
       cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    @media (max-height:760px){
+      .wx-mask-inner{
+        transform:translateY(-5%);
+      }
     }
     @media (max-width:420px){
       .hero h1{ font-size:28px; }
@@ -385,12 +383,11 @@
           <h3>小红书</h3>
         </div>
 
-        <div class="tile" onclick="showWechatGuide()">
+        <div class="tile" onclick="guardWechatOpen(showWechatGuide)">
           <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="抖音写评论" /></div>
           <h3>抖音写评论</h3>
         </div>
-
-        <div class="tile" onclick="showWechatGuide()">
+        <div class="tile" onclick="guardWechatOpen(showWechatGuide)">
           <div class="tile-icon icon-wx"><img src="./images/moments.png" alt="发朋友圈" /></div>
           <h3>发朋友圈</h3>
         </div>
@@ -400,7 +397,7 @@
           <h3>携程</h3>
         </div>
 
-        <div class="tile" onclick="showWechatGuide()">
+        <div class="tile" onclick="guardWechatOpen(showWechatGuide)">
           <div class="tile-icon icon-qunar"><img src="./images/qunar.png" alt="去哪儿" /></div>
           <h3>去哪儿</h3>
         </div>
@@ -410,32 +407,27 @@
           <h3>美团</h3>
         </div>
 
-        <div class="tile" onclick="showWechatGuide()">
+        <div class="tile" onclick="guardWechatOpen(showWechatGuide)">
           <div class="tile-icon icon-channel"><img src="./images/wx_channel.png" alt="视频号" /></div>
           <h3>关注视频号</h3>
         </div>
-
-        <div class="tile" onclick="showWechatGuide()">
+        <div class="tile" onclick="guardWechatOpen(showWechatGuide)">
           <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="关注抖音" /></div>
           <h3>关注抖音</h3>
         </div>
-
-        <div class="tile" onclick="showWechatGuide()">
+        <div class="tile" onclick="guardWechatOpen(showWechatGuide)">
           <div class="tile-icon icon-wx"><img src="./images/miniapp.png" alt="小程序" /></div>
           <h3>小程序</h3>
         </div>
-
-        <div class="tile" onclick="showWechatGuide()">
+        <div class="tile" onclick="guardWechatOpen(showWechatGuide)">
           <div class="tile-icon icon-wx"><img src="./images/wechat.png" alt="加微信" /></div>
           <h3>加微信</h3>
         </div>
-
-        <div class="tile" onclick="showWechatGuide()">
+        <div class="tile" onclick="guardWechatOpen(showWechatGuide)">
           <div class="tile-icon icon-wifi"><img src="./images/wifi.png" alt="连WIFI" /></div>
           <h3>连WIFI</h3>
         </div>
-
-        <div class="tile" onclick="showWechatGuide()">
+        <div class="tile" onclick="guardWechatOpen(showWechatGuide)">
           <div class="tile-icon icon-dp"><img src="./images/more.png" alt="更多" /></div>
           <h3>更多</h3>
         </div>
