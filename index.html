@@ -633,28 +633,46 @@
     guardWechatOpen(() => {
       const douyinStoreWebUrl = "https://life-share.scsjsd.com/falcon/poi_mwa/poi_detail?poi_id=7279650606363445289&app=aweme&biz_code=trip";
       const poiId = "7279650606363445289";
-      const isIOS = /iPhone|iPad|iPod/i.test(window.navigator.userAgent || "");
-      const douyinStoreAppUrl = isIOS
-        ? "aweme://poi/detail?id=" + encodeURIComponent(poiId) + "&from=webview&refer=web"
-        : "snssdk1128://poi/detail?id=" + encodeURIComponent(poiId) + "&from=webview&refer=web";
+      const appUrls = [
+        "snssdk1128://poi/detail?id=" + encodeURIComponent(poiId),
+        "snssdk1128://poi/detail?poi_id=" + encodeURIComponent(poiId),
+        "snssdk1128://webview?url=" + encodeURIComponent(douyinStoreWebUrl)
+      ];
       const start = Date.now();
-
-      const fallbackTimer = setTimeout(() => {
-        if (Date.now() - start < 1800) {
-          window.location.href = douyinStoreWebUrl;
-        }
-      }, 1200);
+      let hasHidden = false;
+      let cleanupTimer = null;
+      let iframe = null;
+      let link = null;
 
       const clearFallback = () => {
-        clearTimeout(fallbackTimer);
+        if (cleanupTimer) {
+          clearTimeout(cleanupTimer);
+          cleanupTimer = null;
+        }
         document.removeEventListener("visibilitychange", onVisibilityChange);
         window.removeEventListener("pagehide", clearFallback);
         window.removeEventListener("blur", clearFallback);
+        if (iframe) {
+          iframe.remove();
+          iframe = null;
+        }
+        if (link) {
+          link.remove();
+          link = null;
+        }
       };
 
       const onVisibilityChange = () => {
         if (document.hidden) {
+          hasHidden = true;
           clearFallback();
+        }
+      };
+
+      const fallbackToWeb = () => {
+        if (hasHidden) return;
+        if (Date.now() - start < 2500) {
+          window.location.href = douyinStoreWebUrl;
         }
       };
 
@@ -662,7 +680,29 @@
       window.addEventListener("pagehide", clearFallback, { once: true });
       window.addEventListener("blur", clearFallback, { once: true });
 
-      window.location.href = douyinStoreAppUrl;
+      link = document.createElement("a");
+      link.href = appUrls[0];
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.click();
+
+      setTimeout(() => {
+        if (hasHidden) return;
+        iframe = document.createElement("iframe");
+        iframe.style.display = "none";
+        iframe.src = appUrls[1];
+        document.body.appendChild(iframe);
+      }, 180);
+
+      setTimeout(() => {
+        if (hasHidden || !iframe) return;
+        iframe.src = appUrls[2];
+      }, 420);
+
+      cleanupTimer = setTimeout(() => {
+        clearFallback();
+        fallbackToWeb();
+      }, 1400);
     });
   }
 
