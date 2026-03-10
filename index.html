@@ -187,9 +187,9 @@
       display:none;
       align-items:flex-start;
       justify-content:center;
-      padding:88px 24px 40px;
+      padding:40px 24px 28px;
       z-index:9999;
-      overflow:auto;
+      overflow:hidden;
     }
     .wx-mask.show{ display:flex; }
     .wx-mask-inner{
@@ -198,7 +198,10 @@
       text-align:center;
       position:relative;
       color:#2f2f2f;
-      transform:translateY(-10%);
+      transform:translateY(-16%);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
     }
     .wx-mask-close{
       display:none;
@@ -220,7 +223,7 @@
       cursor:default;
     }
     .wx-mask-title{
-      margin:118px 0 18px;
+      margin:88px 0 18px;
       font-size:30px;
       line-height:1.2;
       font-weight:700;
@@ -246,13 +249,14 @@
     }
     .wx-phone{
       width:220px;
-      height:450px;
-      margin:34px auto 0;
+      height:400px;
+      margin:28px auto 0;
       border:10px solid rgba(255,255,255,.9);
       border-radius:38px;
       position:relative;
       background:rgba(255,255,255,.22);
       box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);
+      flex:0 0 auto;
     }
     .wx-phone-notch{
       position:absolute;
@@ -325,7 +329,7 @@
     .wx-mask-bottom-close{
       width:54px;
       height:54px;
-      margin:34px auto 0;
+      margin:20px auto 0;
       border-radius:50%;
       border:2px solid #8f8f94;
       background:transparent;
@@ -337,10 +341,23 @@
       display:flex;
       align-items:center;
       justify-content:center;
+      flex:0 0 auto;
     }
     @media (max-height:760px){
+      .wx-mask{
+        padding:28px 20px 22px;
+      }
       .wx-mask-inner{
-        transform:translateY(-5%);
+        transform:translateY(-12%);
+      }
+      .wx-mask-title{
+        margin-top:72px;
+      }
+      .wx-phone{
+        height:360px;
+      }
+      .wx-mask-bottom-close{
+        margin-top:14px;
       }
     }
     @media (max-width:420px){
@@ -383,11 +400,11 @@
           <h3>小红书</h3>
         </div>
 
-        <div class="tile" onclick="guardWechatOpen(showWechatGuide)">
+        <div class="tile" onclick="handleRestrictedEntry()">
           <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="抖音写评论" /></div>
           <h3>抖音写评论</h3>
         </div>
-        <div class="tile" onclick="guardWechatOpen(showWechatGuide)">
+        <div class="tile" onclick="handleRestrictedEntry()">
           <div class="tile-icon icon-wx"><img src="./images/moments.png" alt="发朋友圈" /></div>
           <h3>发朋友圈</h3>
         </div>
@@ -397,7 +414,7 @@
           <h3>携程</h3>
         </div>
 
-        <div class="tile" onclick="guardWechatOpen(showWechatGuide)">
+        <div class="tile" onclick="handleRestrictedEntry()">
           <div class="tile-icon icon-qunar"><img src="./images/qunar.png" alt="去哪儿" /></div>
           <h3>去哪儿</h3>
         </div>
@@ -407,27 +424,27 @@
           <h3>美团</h3>
         </div>
 
-        <div class="tile" onclick="guardWechatOpen(showWechatGuide)">
+        <div class="tile" onclick="handleRestrictedEntry()">
           <div class="tile-icon icon-channel"><img src="./images/wx_channel.png" alt="视频号" /></div>
           <h3>关注视频号</h3>
         </div>
-        <div class="tile" onclick="guardWechatOpen(showWechatGuide)">
+        <div class="tile" onclick="handleRestrictedEntry()">
           <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="关注抖音" /></div>
           <h3>关注抖音</h3>
         </div>
-        <div class="tile" onclick="guardWechatOpen(showWechatGuide)">
+        <div class="tile" onclick="handleRestrictedEntry()">
           <div class="tile-icon icon-wx"><img src="./images/miniapp.png" alt="小程序" /></div>
           <h3>小程序</h3>
         </div>
-        <div class="tile" onclick="guardWechatOpen(showWechatGuide)">
+        <div class="tile" onclick="handleRestrictedEntry()">
           <div class="tile-icon icon-wx"><img src="./images/wechat.png" alt="加微信" /></div>
           <h3>加微信</h3>
         </div>
-        <div class="tile" onclick="guardWechatOpen(showWechatGuide)">
+        <div class="tile" onclick="handleRestrictedEntry()">
           <div class="tile-icon icon-wifi"><img src="./images/wifi.png" alt="连WIFI" /></div>
           <h3>连WIFI</h3>
         </div>
-        <div class="tile" onclick="guardWechatOpen(showWechatGuide)">
+        <div class="tile" onclick="handleRestrictedEntry()">
           <div class="tile-icon icon-dp"><img src="./images/more.png" alt="更多" /></div>
           <h3>更多</h3>
         </div>
@@ -496,9 +513,18 @@
   function guardWechatOpen(action){
     if (isWeChatBrowser()){
       showWechatGuide();
-      return;
+      return false;
     }
-    action();
+    if (typeof action === "function") {
+      action();
+    }
+    return true;
+  }
+
+  function handleRestrictedEntry(){
+    return guardWechatOpen(() => {
+      alert("功能正在开发中…");
+    });
   }
 
   function setStatus(text){
