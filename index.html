@@ -78,6 +78,20 @@
       box-shadow:0 10px 28px rgba(29,39,85,.08);
       text-align:left;
       cursor:pointer;
+      position:relative;
+    }
+
+    .gen-badge{
+      position:absolute;
+      top:10px;
+      right:10px;
+      font-size:10px;
+      background:#ff2442;
+      color:#fff;
+      padding:3px 6px;
+      border-radius:8px;
+      line-height:1;
+      font-weight:600;
     }
     .tile-icon{
       width:56px;
@@ -131,38 +145,41 @@
     button.secondary{ background:#111; }
     .copy-icon-btn{
       display:none;
-      width:42px;
-      height:42px;
-      padding:0;
+      width:100%;
+      height:auto;
+      padding:12px 12px;
       margin-top:0;
       border:none;
-      border-radius:10px;
-      background:#fff;
-      color:#ff2442;
-      border:1px solid #ff2442;
-      font-size:0;
-      line-height:1;
+      border-radius:14px;
+      background:#111;
+      color:#fff;
+      font-size:14px;
+      font-weight:600;
+      line-height:1.2;
       align-items:center;
       justify-content:center;
-      justify-self:end;
+      justify-self:stretch;
     }
     .copy-icon-btn.show{
       display:inline-flex;
     }
     .copy-icon-img{
-      width:20px;
-      height:20px;
-      object-fit:contain;
-      display:block;
+      display:none;
     }
     button:disabled{ opacity:.6; }
     .toolbar{
       display:grid;
       grid-template-columns:1fr auto;
       gap:10px;
-      margin-top:12px;
+      margin-top:14px;
     }
     .toolbar button{ margin-top:0; }
+    .result-actions{
+      display:none;
+    }
+    .result-actions.show{
+      display:grid;
+    }
     input{
       width:100%;
       box-sizing:border-box;
@@ -187,6 +204,9 @@
       line-height:1.6;
       color:#111;
       border:1px solid #edf0f7;
+    }
+    #result.show{
+      display:block;
     }
     .hint{
       font-size:12px;
@@ -422,14 +442,13 @@
             font-size: 12px;
         }
       .copy-icon-btn{
-        width:36px;
-        height:36px;
-        font-size:0;
-        border-radius:9px;
+        width:100%;
+        height:auto;
+        font-size:14px;
+        border-radius:14px;
       }
       .copy-icon-img{
-        width:18px;
-        height:18px;
+        display:none;
       }
       .wifi-copy-badge{
         min-width:78px;
@@ -630,29 +649,31 @@
       <h3 class="panel-title">欢迎入住游牧地球民宿</h3>
       <p class="panel-desc">很高兴与你相遇，愿你在这里住得舒服、玩得开心。下方为你准备了入住期间常用的快捷服务，点击即可使用。</p>
 
-      <div id="result"></div>
-
-      <div class="toolbar">
-        <button id="btnGen" onclick="generate()">一键生成内容</button>
-        <button id="btnCopy" class="copy-icon-btn" onclick="copyText()" aria-label="复制文案" title="复制文案"><img src="./images/copy.png" alt="复制文案" class="copy-icon-img" /></button>
+      <div class="hint">
+        <div>✨ 点击下方平台，即可自动生成对应平台文案：</div>
+        <div>1) 点击小红书 / 抖音 / 携程 / 美团 / 去哪儿，可自动生成适配点评或分享文案</div>
+        <div>2) 生成完成后，可重新生成或一键复制使用</div>
+        <div>3) WIFI、微信、小程序等功能也可以直接点击使用</div>
       </div>
 
-      <div class="hint">
-        <div>✨ 你可以在这里快速完成：</div>
-        <div>1) 生成入住分享、点评参考内容，发小红书 / 写平台评价更方便</div>
-        <div>2) 快速连接门店 WIFI，不用反复找密码</div>
-        <div>3) 一键添加门店微信，咨询服务或领取更多入住信息</div>
+      <div id="result"></div>
+
+      <div id="resultActions" class="toolbar result-actions">
+        <button id="btnGen" onclick="generate()">重新生成</button>
+        <button id="btnCopy" class="copy-icon-btn" onclick="copyText()" aria-label="复制文案" title="复制文案">复制文案</button>
       </div>
     </section>
 
     <section class="panel">
       <div class="grid">
         <div class="tile" onclick="handlePlatformClick('xhs')">
+          <span class="gen-badge">生成文案</span>
           <div class="tile-icon icon-xhs"><img src="./images/xhs.png" alt="小红书" /></div>
           <h3>小红书</h3>
         </div>
 
         <div class="tile" onclick="handlePlatformClick('douyin')">
+          <span class="gen-badge">生成文案</span>
           <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="抖音写评论" /></div>
           <h3>抖音写评论</h3>
         </div>
@@ -662,16 +683,19 @@
         </div>
 
         <div class="tile" onclick="handlePlatformClick('ctrip')">
+          <span class="gen-badge">生成文案</span>
           <div class="tile-icon icon-ctrip"><img src="./images/ctrip.png" alt="携程" /></div>
           <h3>携程</h3>
         </div>
 
         <div class="tile" onclick="handlePlatformClick('qunar')">
+          <span class="gen-badge">生成文案</span>
           <div class="tile-icon icon-qunar"><img src="./images/qunar.png" alt="去哪儿" /></div>
           <h3>去哪儿</h3>
         </div>
 
         <div class="tile" onclick="handlePlatformClick('meituan')">
+          <span class="gen-badge">生成文案</span>
           <div class="tile-icon icon-mt"><img src="./images/meituan.png" alt="美团" /></div>
           <h3>美团</h3>
         </div>
@@ -887,8 +911,21 @@
 
   function setStatus(text){
     const resultEl = document.getElementById("result");
-    resultEl.style.display = "block";
+    if (!resultEl) return;
+    resultEl.classList.add("show");
     resultEl.innerText = text;
+  }
+
+  function updateGenerateUI(hasResult){
+    const actions = document.getElementById("resultActions");
+    const resultEl = document.getElementById("result");
+
+    if (resultEl) {
+      resultEl.classList.toggle("show", !!hasResult);
+    }
+    if (actions) {
+      actions.classList.toggle("show", !!hasResult);
+    }
   }
 
   function setSelectedPlatform(platform){
@@ -1030,6 +1067,9 @@
         let bodyText = "";
         try { bodyText = await res.text(); } catch(e) {}
         setStatus(`请求失败：HTTP ${res.status} ${res.statusText}\n\n${bodyText}`);
+        if (!generatedText.trim()) {
+          updateGenerateUI(false);
+        }
         return false;
       }
 
@@ -1038,12 +1078,16 @@
 
       if (!content){
         setStatus("请求成功但没有拿到 content。\n\n返回：\n" + JSON.stringify(data, null, 2));
+        if (!generatedText.trim()) {
+          updateGenerateUI(false);
+        }
         return false;
       }
 
       generatedText = content;
       setStatus(generatedText);
       document.getElementById("btnCopy").classList.add("show");
+      updateGenerateUI(true);
 
       if (silentCopy) { try { await navigator.clipboard.writeText(generatedText); } catch(e) {} }
       return true;
@@ -1053,6 +1097,9 @@
         setStatus("请求超时，请稍后重试。");
       } else {
         setStatus("生成失败：" + (e?.message || e));
+      }
+      if (!generatedText.trim()) {
+        updateGenerateUI(false);
       }
       return false;
     }finally{
@@ -1234,6 +1281,9 @@
       window.location.href = appUrl;
     });
   }
+</script>
+<script>
+  updateGenerateUI(false);
 </script>
 </body>
 </html>
