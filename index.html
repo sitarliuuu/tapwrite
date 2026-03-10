@@ -366,7 +366,167 @@
         grid-template-columns:repeat(3,minmax(0,1fr));
         gap:12px;
       }
-      .tile{ padding:16px 14px; }
+      .tile {
+        padding: 16px 14px;
+      }
+      .wifi-modal-card{
+        border-radius:28px;
+        padding:34px 20px 28px;
+      }
+      .wifi-modal-title{
+        font-size:18px;
+        margin-bottom:22px;
+      }
+      .wifi-info-row{
+        min-height:78px;
+        padding:0 18px;
+        gap:14px;
+      }
+      .wifi-info-icon{
+        width:34px;
+        flex-basis:34px;
+        font-size:26px;
+      }
+      .wifi-info-text{
+        font-size:18px;
+      }
+      .wifi-copy-badge{
+        min-width:78px;
+        height:44px;
+        font-size:14px;
+        padding:0 12px;
+      }
+      .wifi-modal-close{
+        width:58px;
+        height:58px;
+        font-size:30px;
+      }
+      .wechat-qr-desc{
+          font-size:13px;
+          margin:-6px 0 18px;
+        }
+        .wechat-qr-box{
+          border-radius:20px;
+          padding:14px;
+        }
+        .wechat-qr-image{
+          max-width:280px;
+          border-radius:14px;
+        }
+    }
+
+    .wifi-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .42);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 10000;
+    }
+    .wifi-modal.show {
+      display: flex;
+    }
+    .wifi-modal-card {
+      width: 100%;
+      max-width: 640px;
+      background: #f4f4f5;
+      border-radius: 32px;
+      padding: 44px 28px 34px;
+      position: relative;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, .18);
+    }
+    .wifi-modal-title {
+      margin: 0 0 28px;
+      text-align: center;
+      font-size: 22px;
+      line-height: 1.4;
+      color: #222;
+      font-weight: 600;
+    }
+    .wifi-info-row {
+      min-height: 92px;
+      border-radius: 20px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 0 24px;
+      margin-bottom: 18px;
+    }
+    .wifi-password-row {
+      margin-bottom: 0;
+    }
+    .wifi-info-icon {
+      width: 42px;
+      text-align: center;
+      font-size: 30px;
+      line-height: 1;
+      flex: 0 0 42px;
+    }
+    .wifi-info-text {
+      font-size: 22px;
+      line-height: 1.4;
+      color: #222;
+      word-break: break-all;
+      flex: 1;
+      text-align: left;
+    }
+    .wifi-copy-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 96px;
+      height: 52px;
+      padding: 0 16px;
+      border-radius: 12px;
+      background: #dff4df;
+      color: #44a35f;
+      font-size: 16px;
+      font-weight: 600;
+      flex: 0 0 auto;
+    }
+    .wifi-modal-close {
+      width: 64px;
+      height: 64px;
+      margin: 26px auto 0;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 255, 255, .92);
+      background: rgba(0, 0, 0, .18);
+      color: #fff;
+      font-size: 34px;
+      line-height: 1;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .wechat-qr-card{
+      max-width:460px;
+      text-align:center;
+    }
+    .wechat-qr-desc{
+      margin:-8px 0 22px;
+      font-size:14px;
+      line-height:1.7;
+      color:#666;
+      text-align:center;
+    }
+    .wechat-qr-box{
+      background:#fff;
+      border-radius:24px;
+      padding:18px;
+      box-shadow:inset 0 0 0 1px #f0f0f0;
+    }
+    .wechat-qr-image{
+      display:block;
+      width:100%;
+      max-width:320px;
+      margin:0 auto;
+      border-radius:16px;
+      object-fit:contain;
+      background:#fff;
     }
   </style>
 </head>
@@ -432,15 +592,15 @@
           <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="关注抖音" /></div>
           <h3>关注抖音</h3>
         </div>
-        <div class="tile" onclick="handleRestrictedEntry()">
+        <div class="tile" onclick="openMiniProgram()">
           <div class="tile-icon icon-wx"><img src="./images/miniapp.png" alt="小程序" /></div>
           <h3>小程序</h3>
         </div>
-        <div class="tile" onclick="handleRestrictedEntry()">
-          <div class="tile-icon icon-wx"><img src="./images/wechat.png" alt="加微信" /></div>
+        <div class="tile" onclick="openWechatQrModal()">
+          <div class="tile-icon icon-wx"><img src="./images/wechat.png" alt="加微信"/></div>
           <h3>加微信</h3>
         </div>
-        <div class="tile" onclick="handleRestrictedEntry()">
+        <div class="tile" onclick="openWifiModal()">
           <div class="tile-icon icon-wifi"><img src="./images/wifi.png" alt="连WIFI" /></div>
           <h3>连WIFI</h3>
         </div>
@@ -453,38 +613,71 @@
   </div>
 
   <div id="wechatMask" class="wx-mask" aria-hidden="true">
-    <div class="wx-mask-inner">
-      <button class="wx-mask-close" type="button" onclick="hideWechatGuide()">×</button>
-      <button class="wx-mask-more" type="button" aria-label="更多">···</button>
+      <div class="wx-mask-inner">
+          <button class="wx-mask-close" type="button" onclick="hideWechatGuide()">×</button>
+          <button class="wx-mask-more" type="button" aria-label="更多">···</button>
 
-      <svg class="wx-arrow" viewBox="0 0 120 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M20 190C20 132 42 112 76 108C108 104 111 72 108 24" stroke="#b9bbc3" stroke-width="3" stroke-linecap="round" stroke-dasharray="9 10"/>
-        <path d="M100 34L108 18L116 34" stroke="#b9bbc3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+          <svg class="wx-arrow" viewBox="0 0 120 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M20 190C20 132 42 112 76 108C108 104 111 72 108 24" stroke="#b9bbc3" stroke-width="3"
+                    stroke-linecap="round" stroke-dasharray="9 10"/>
+              <path d="M100 34L108 18L116 34" stroke="#b9bbc3" stroke-width="3" stroke-linecap="round"
+                    stroke-linejoin="round"/>
+          </svg>
 
-      <h2 class="wx-mask-title">还差1步得好礼</h2>
-      <p class="wx-mask-desc">
-        由于微信限制，请点击右上角 <span style="display:inline-block;background:#e5e5e7;color:#666;border-radius:10px;padding:0 10px;line-height:1.5;">···</span><br>
-        选择 <span class="highlight">“在浏览器打开”</span>
-      </p>
+          <h2 class="wx-mask-title">还差1步得好礼</h2>
+          <p class="wx-mask-desc">
+              由于微信限制，请点击右上角 <span
+                  style="display:inline-block;background:#e5e5e7;color:#666;border-radius:10px;padding:0 10px;line-height:1.5;">···</span><br>
+              选择 <span class="highlight">“在浏览器打开”</span>
+          </p>
 
-      <div class="wx-phone" aria-hidden="true">
-        <div class="wx-phone-notch"></div>
-        <div class="wx-phone-sheet"></div>
-        <div class="wx-phone-grid">
-          <span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span>
-        </div>
-        <div class="wx-phone-focus">
-          <div class="wx-phone-focus-inner">
-            <div class="wx-browser-icon">🌐</div>
-            在浏览器打开
+          <div class="wx-phone" aria-hidden="true">
+              <div class="wx-phone-notch"></div>
+              <div class="wx-phone-sheet"></div>
+              <div class="wx-phone-grid">
+                  <span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span>
+              </div>
+              <div class="wx-phone-focus">
+                  <div class="wx-phone-focus-inner">
+                      <div class="wx-browser-icon">🌐</div>
+                      在浏览器打开
+                  </div>
+              </div>
           </div>
-        </div>
-      </div>
 
-      <button class="wx-mask-bottom-close" type="button" onclick="hideWechatGuide()">×</button>
-    </div>
+          <button class="wx-mask-bottom-close" type="button" onclick="hideWechatGuide()">×</button>
+      </div>
+  </div>
+  <div id="wifiModal" class="wifi-modal" aria-hidden="true">
+      <div class="wifi-modal-card">
+          <h2 class="wifi-modal-title">已复制密码，去系统页连接吧</h2>
+
+          <div class="wifi-info-row">
+              <div class="wifi-info-icon">📶</div>
+              <div class="wifi-info-text">游牧地球民宿</div>
+          </div>
+
+          <div class="wifi-info-row wifi-password-row">
+              <div class="wifi-info-icon">🔒</div>
+              <div class="wifi-info-text">ymdq888888</div>
+              <span class="wifi-copy-badge" id="wifiCopyBadge">已复制</span>
+          </div>
+
+          <button class="wifi-modal-close" type="button" onclick="hideWifiModal()">×</button>
+      </div>
+  </div>
+  <div id="wechatQrModal" class="wifi-modal" aria-hidden="true">
+      <div class="wifi-modal-card wechat-qr-card">
+          <h2 class="wifi-modal-title">长按识别二维码添加微信</h2>
+          <p class="wechat-qr-desc">若无法直接识别，可截图后打开微信扫一扫，从相册中选择二维码。</p>
+
+          <div class="wechat-qr-box">
+              <img class="wechat-qr-image" src="./images/wechat_qr.png" alt="微信二维码"/>
+          </div>
+
+          <button class="wifi-modal-close" type="button" onclick="hideWechatQrModal()">×</button>
+      </div>
   </div>
 <script>
   let generatedText = "";
@@ -526,6 +719,66 @@
       alert("功能正在开发中…");
     });
   }
+
+  async function copyWifiPassword() {
+    const password = "ymdq888888";
+    try {
+      await navigator.clipboard.writeText(password);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async function openWifiModal() {
+    return guardWechatOpen(async () => {
+      await copyWifiPassword();
+      const modal = document.getElementById("wifiModal");
+      const badge = document.getElementById("wifiCopyBadge");
+      if (!modal) return;
+
+      if (badge) {
+        badge.innerText = "已复制";
+      }
+
+      modal.classList.add("show");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    });
+  }
+
+  function hideWifiModal() {
+      const modal = document.getElementById("wifiModal");
+      if (!modal) return;
+      modal.classList.remove("show");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+  }
+
+  function openWechatQrModal() {
+      return guardWechatOpen(() => {
+          const modal = document.getElementById("wechatQrModal");
+          if (!modal) return;
+          modal.classList.add("show");
+          modal.setAttribute("aria-hidden", "false");
+          document.body.style.overflow = "hidden";
+      });
+  }
+
+  function openMiniProgram(){
+    guardWechatOpen(() => {
+      const urlLink = "https://wxaurl.cn/CpKpBx0kXen3B0A";
+      window.location.href = urlLink;
+    });
+  }
+
+function hideWechatQrModal(){
+  const modal = document.getElementById("wechatQrModal");
+  if (!modal) return;
+  modal.classList.remove("show");
+  modal.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
 
   function setStatus(text){
     const resultEl = document.getElementById("result");
