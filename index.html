@@ -1,1001 +1,1375 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>游牧地球民宿入住快捷助手</title>
-  <style>
-    *{ box-sizing:border-box; }
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial;
-      background:#eef3ff;
-      color:#111;
-      padding:20px 16px 32px;
-      text-align:center;
-    }
-    .page{
-      max-width:520px;
-      margin:0 auto;
-    }
-    .hero{
-      text-align:center;
-      background:linear-gradient(180deg,#f7f9ff 0%,#edf2ff 100%);
-      border-radius:24px;
-      padding:32px 20px 24px;
-      margin-bottom:18px;
-    }
-    .hero h1{
-      margin:0;
-      font-size:34px;
-      line-height:1.2;
-      color:#1d2755;
-      font-weight:700;
-      letter-spacing:1px;
-    }
-    .hero p{
-      margin:12px 0 0;
-      font-size:16px;
-      color:#5a648a;
-    }
-    .panel-kicker{
-      margin:0 0 8px;
-      font-size:12px;
-      line-height:1;
-      font-weight:600;
-      color:#5a648a;
-      letter-spacing:1px;
-    }
-    .panel{
-      background:#fff;
-      border-radius:24px;
-      padding:18px;
-      box-shadow:0 10px 28px rgba(29,39,85,.08);
-      margin-bottom:18px;
-      text-align:left;
-    }
-    .panel-title{
-      margin:0 0 6px;
-      font-size:18px;
-      font-weight:700;
-      color:#111;
-    }
-    .panel-desc{
-      margin:0;
-      font-size:13px;
-      color:#888;
-      line-height:1.5;
-    }
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:16px;
-    }
-    .tile{
-      background:#fff;
-      border-radius:24px;
-      padding:18px 16px;
-      box-shadow:0 10px 28px rgba(29,39,85,.08);
-      text-align:left;
-      cursor:pointer;
-      position:relative;
-    }
-
-    .gen-badge{
-      position:absolute;
-      top:10px;
-      right:10px;
-      font-size:10px;
-      background:#ff2442;
-      color:#fff;
-      padding:3px 6px;
-      border-radius:8px;
-      line-height:1;
-      font-weight:600;
-    }
-    .tile-icon{
-      width:56px;
-      height:56px;
-      border-radius:16px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      margin:0 auto 14px;
-    }
-    .tile-icon img{
-      width:28px;
-      height:28px;
-      object-fit:contain;
-    }
-    .icon-xhs{ background:#ffe8ed; }
-    .icon-dp{ background:#fff0e6; }
-    .icon-ctrip{ background:#e8f1ff; }
-    .icon-qunar{ background:#e8f7f7; }
-    .icon-dy{ background:#eef1ff; }
-    .icon-mt{ background:#fff7cf; }
-    .icon-wifi{ background:#e8f3ff; }
-    .icon-wx{ background:#e9f9e8; }
-    .icon-channel{ background:#eef6ef; }
-    .tile h3{
-      margin:0 0 8px;
-      font-size:16px;
-      line-height:1.35;
-      color:#111;
-      text-align:center;
-    }
-    .tile p{
-      margin:0;
-      font-size:12px;
-      line-height:1.5;
-      color:#909090;
-      min-height:36px;
-      text-align:center;
-    }
-    button{
-      width:100%;
-      padding:12px 12px;
-      margin-top:12px;
-      border:none;
-      border-radius:14px;
-      font-size:14px;
-      font-weight:600;
-      background:#ff2442;
-      color:#fff;
-    }
-    button.secondary{ background:#111; }
-    .copy-icon-btn{
-      display:none;
-      width:100%;
-      height:auto;
-      padding:12px 12px;
-      margin-top:0;
-      border:none;
-      border-radius:14px;
-      background:#111;
-      color:#fff;
-      font-size:14px;
-      font-weight:600;
-      line-height:1.2;
-      align-items:center;
-      justify-content:center;
-      justify-self:stretch;
-    }
-    .copy-icon-btn.show{
-      display:inline-flex;
-    }
-    .copy-icon-img{
-      display:none;
-    }
-    button:disabled{ opacity:.6; }
-    .toolbar{
-      display:grid;
-      grid-template-columns:1fr auto;
-      gap:10px;
-      margin-top:14px;
-    }
-    .toolbar button{ margin-top:0; }
-    .result-actions{
-      display:none;
-    }
-    .result-actions.show{
-      display:grid;
-    }
-    input{
-      width:100%;
-      box-sizing:border-box;
-      padding:12px 14px;
-      border-radius:14px;
-      border:1px solid #d9def0;
-      font-size:14px;
-      margin-top:12px;
-      outline:none;
-      background:#fff;
-    }
-    #result{
-      display:none;
-      white-space:pre-wrap;
-      text-align:left;
-      margin-top:14px;
-      padding:14px;
-      background:#f7f8fc;
-      border-radius:16px;
-      min-height:120px;
-      font-size:14px;
-      line-height:1.6;
-      color:#111;
-      border:1px solid #edf0f7;
-    }
-    #result.show{
-      display:block;
-    }
-    .hint{
-      font-size:12px;
-      color:#666;
-      text-align:left;
-      margin-top:12px;
-      line-height:1.6;
-    }
-    .section-title{
-      margin:0 0 12px;
-      font-size:16px;
-      font-weight:700;
-      color:#32406d;
-    }
-    .wx-mask{
-      position:fixed;
-      inset:0;
-      background:linear-gradient(180deg,#f4f4f6 0%,#eef1f7 100%);
-      display:none;
-      align-items:flex-start;
-      justify-content:center;
-      padding:40px 24px 28px;
-      z-index:9999;
-      overflow:hidden;
-    }
-    .wx-mask.show{ display:flex; }
-    .wx-mask-inner{
-      width:100%;
-      max-width:420px;
-      text-align:center;
-      position:relative;
-      color:#2f2f2f;
-      transform:translateY(-16%);
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-    }
-    .wx-mask-close{
-      display:none;
-    }
-    .wx-mask-more{
-      position:absolute;
-      right:0;
-      top:2px;
-      width:48px;
-      height:36px;
-      border:none;
-      border-radius:12px;
-      background:#e5e5e7;
-      color:#666;
-      font-size:24px;
-      line-height:36px;
-      padding:0;
-      margin:0;
-      cursor:default;
-    }
-    .wx-mask-title{
-      margin:88px 0 18px;
-      font-size:30px;
-      line-height:1.2;
-      font-weight:700;
-      color:#2f2f2f;
-    }
-    .wx-mask-desc{
-      margin:0;
-      font-size:17px;
-      line-height:1.9;
-      color:#4a4a4a;
-    }
-    .wx-mask-desc .highlight{
-      color:#1677ff;
-      font-weight:600;
-    }
-    .wx-arrow{
-      position:absolute;
-      right:20px;
-      top:84px;
-      width:96px;
-      height:180px;
-      pointer-events:none;
-    }
-    .wx-phone{
-      width:220px;
-      height:400px;
-      margin:28px auto 0;
-      border:10px solid rgba(255,255,255,.9);
-      border-radius:38px;
-      position:relative;
-      background:rgba(255,255,255,.22);
-      box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);
-      flex:0 0 auto;
-    }
-    .wx-phone-notch{
-      position:absolute;
-      left:50%;
-      top:0;
-      transform:translateX(-50%);
-      width:92px;
-      height:18px;
-      background:rgba(255,255,255,.92);
-      border-radius:0 0 14px 14px;
-    }
-    .wx-phone-sheet{
-      position:absolute;
-      left:12px;
-      right:12px;
-      bottom:16px;
-      height:150px;
-      border-radius:24px;
-      background:rgba(255,255,255,.28);
-    }
-    .wx-phone-grid{
-      position:absolute;
-      left:26px;
-      right:26px;
-      bottom:42px;
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:14px;
-    }
-    .wx-phone-grid span{
-      display:block;
-      height:38px;
-      border-radius:8px;
-      background:rgba(255,255,255,.48);
-    }
-    .wx-phone-focus{
-      position:absolute;
-      left:50%;
-      bottom:96px;
-      transform:translateX(-50%);
-      width:144px;
-      height:144px;
-      border-radius:50%;
-      border:8px solid rgba(255,255,255,.75);
-      background:rgba(255,255,255,.18);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-    .wx-phone-focus-inner{
-      width:88px;
-      text-align:center;
-      color:#4a4a4a;
-      font-size:14px;
-      line-height:1.35;
-      font-weight:600;
-    }
-    .wx-browser-icon{
-      width:44px;
-      height:44px;
-      margin:0 auto 8px;
-      border-radius:14px;
-      background:#fff;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      box-shadow:0 4px 12px rgba(0,0,0,.06);
-      font-size:24px;
-    }
-    .wx-mask-bottom-close{
-      width:54px;
-      height:54px;
-      margin:20px auto 0;
-      border-radius:50%;
-      border:2px solid #8f8f94;
-      background:transparent;
-      color:#5a5a5f;
-      font-size:28px;
-      line-height:50px;
-      padding:0;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex:0 0 auto;
-    }
-    @media (max-height:760px){
-      .wx-mask{
-        padding:28px 20px 22px;
-      }
-      .wx-mask-inner{
-        transform:translateY(-12%);
-      }
-      .wx-mask-title{
-        margin-top:72px;
-      }
-      .wx-phone{
-        height:360px;
-      }
-      .wx-mask-bottom-close{
-        margin-top:14px;
-      }
-    }
-    @media (max-width:420px){
-      .platform-confirm-card{
-        border-radius:20px;
-        padding:22px 18px 18px;
-      }
-      .platform-confirm-title{
-        font-size:18px;
-      }
-      .platform-confirm-desc{
-        font-size:13px;
-      }
-      .hero h1{ font-size:28px; }
-      .grid{
-        grid-template-columns:repeat(3,minmax(0,1fr));
-        gap:12px;
-      }
-      .tile {
-        padding: 16px 14px;
-      }
-      .wifi-modal-card{
-        border-radius:28px;
-        padding:34px 20px 28px;
-      }
-      .wifi-modal-title{
-        font-size:18px;
-        margin-bottom:22px;
-      }
-        .wifi-info-row {
-            min-height: 60px;
-            padding: 0 14px;
-            gap: 8px;
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>游牧地球民宿入住快捷助手</title>
+    <style>
+        * {
+            box-sizing: border-box;
         }
-        .wifi-info-icon {
-            width: 24px;
-            flex-basis: 24px;
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial;
+            background: #eef3ff;
+            color: #111;
+            padding: 20px 16px 32px;
+            text-align: center;
+        }
+
+        .page {
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .hero {
+            text-align: center;
+            background: linear-gradient(180deg, #f7f9ff 0%, #edf2ff 100%);
+            border-radius: 24px;
+            padding: 32px 20px 24px;
+            margin-bottom: 18px;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: 34px;
+            line-height: 1.2;
+            color: #1d2755;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .hero p {
+            margin: 12px 0 0;
             font-size: 16px;
+            color: #5a648a;
         }
-        .wifi-info-text {
+
+        .panel-kicker {
+            margin: 0 0 8px;
             font-size: 12px;
+            line-height: 1;
+            font-weight: 600;
+            color: #5a648a;
+            letter-spacing: 1px;
         }
-      .copy-icon-btn{
-        width:100%;
-        height:auto;
-        font-size:14px;
-        border-radius:14px;
-      }
-      .copy-icon-img{
-        display:none;
-      }
-      .wifi-copy-badge{
-        min-width:78px;
-        height:44px;
-        font-size:14px;
-        padding:0 12px;
-      }
-      .wifi-modal-close{
-        width:58px;
-        height:58px;
-        font-size:30px;
-      }
-      .wechat-qr-desc{
-          font-size:13px;
-          margin:-6px 0 18px;
-        }
-        .wechat-qr-box{
-          border-radius:20px;
-          padding:14px;
-        }
-        .wechat-qr-image{
-          max-width:280px;
-          border-radius:14px;
-        }
-    }
 
-    .platform-confirm-overlay{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.42);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:24px;
-      z-index:10001;
-    }
-    .platform-confirm-overlay.show{
-      display:flex;
-    }
-    .platform-confirm-card{
-      width:100%;
-      max-width:420px;
-      background:#fff;
-      border-radius:24px;
-      padding:26px 22px 22px;
-      text-align:center;
-      box-shadow:0 18px 50px rgba(0,0,0,.18);
-    }
-    .platform-confirm-title{
-      margin:0 0 10px;
-      font-size:20px;
-      line-height:1.4;
-      color:#111;
-      font-weight:700;
-    }
-    .platform-confirm-desc{
-      margin:0;
-      font-size:14px;
-      line-height:1.75;
-      color:#666;
-      white-space:pre-line;
-    }
-    .platform-confirm-actions{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-top:18px;
-    }
-    .platform-confirm-actions button{
-      margin-top:0;
-    }
-    .platform-confirm-cancel{
-      background:#f3f4f7;
-      color:#333;
-    }
+        .panel {
+            background: #fff;
+            border-radius: 24px;
+            padding: 18px;
+            box-shadow: 0 10px 28px rgba(29, 39, 85, .08);
+            margin-bottom: 18px;
+            text-align: left;
+        }
 
-    .wifi-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, .42);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      z-index: 10000;
-    }
-    .wifi-modal.show {
-      display: flex;
-    }
-    .wifi-modal-card {
-      width: 100%;
-      max-width: 640px;
-      background: #f4f4f5;
-      border-radius: 32px;
-      padding: 44px 28px 34px;
-      position: relative;
-      box-shadow: 0 18px 50px rgba(0, 0, 0, .18);
-    }
-    .wifi-modal-title {
-      margin: 0 0 28px;
-      text-align: center;
-      font-size: 22px;
-      line-height: 1.4;
-      color: #222;
-      font-weight: 600;
-    }
-    .wifi-info-row {
-      min-height: 76px;
-      border-radius: 20px;
-      background: #fff;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 0 18px;
-      margin-bottom: 14px;
-    }
-    .wifi-password-row {
-      margin-bottom: 0;
-    }
-    .wifi-info-icon {
-      width: 32px;
-      text-align: center;
-      font-size: 22px;
-      line-height: 1;
-      flex: 0 0 32px;
-    }
-    .wifi-info-text {
-      font-size: 16px;
-      line-height: 1.4;
-      color: #222;
-      word-break: break-all;
-      flex: 1;
-      text-align: left;
-    }
-    .wifi-copy-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 96px;
-      height: 52px;
-      padding: 0 16px;
-      border-radius: 12px;
-      background: #dff4df;
-      color: #44a35f;
-      font-size: 16px;
-      font-weight: 600;
-      flex: 0 0 auto;
-    }
-    .wifi-modal-close {
-      width: 64px;
-      height: 64px;
-      margin: 26px auto 0;
-      border-radius: 50%;
-      border: 3px solid rgba(255, 255, 255, .92);
-      background: rgba(0, 0, 0, .18);
-      color: #fff;
-      font-size: 34px;
-      line-height: 1;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .wechat-qr-card{
-      max-width:460px;
-      text-align:center;
-    }
-    .wechat-qr-desc{
-      margin:-8px 0 22px;
-      font-size:14px;
-      line-height:1.7;
-      color:#666;
-      text-align:center;
-    }
-    .wechat-qr-box{
-      background:#fff;
-      border-radius:24px;
-      padding:18px;
-      box-shadow:inset 0 0 0 1px #f0f0f0;
-    }
-    .wechat-qr-image{
-      display:block;
-      width:100%;
-      max-width:320px;
-      margin:0 auto;
-      border-radius:16px;
-      object-fit:contain;
-      background:#fff;
-    }
-  </style>
+        .panel-title {
+            margin: 0 0 6px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #111;
+        }
+
+        .panel-desc {
+            margin: 0;
+            font-size: 13px;
+            color: #888;
+            line-height: 1.5;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns:repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .tile {
+            background: #fff;
+            border-radius: 24px;
+            padding: 18px 16px 16px;
+            box-shadow: 0 10px 28px rgba(29, 39, 85, .08);
+            text-align: left;
+            cursor: pointer;
+            position: relative;
+            border: 1px solid transparent;
+            transition: transform .18s ease, opacity .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+        }
+
+        .tile.is-loading {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 32px rgba(29, 39, 85, .12);
+            border-color: #e7d9aa;
+            background: #fffdf7;
+        }
+
+        .tile.is-ready {
+            border-color: #d8e3f8;
+            background: #f8fbff;
+        }
+
+        .tile.is-disabled {
+            opacity: .45;
+            pointer-events: none;
+        }
+
+        .tile-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+        }
+
+        .tile-icon img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        .icon-xhs {
+            background: #ffe8ed;
+        }
+
+        .icon-dp {
+            background: #fff0e6;
+        }
+
+        .icon-ctrip {
+            background: #e8f1ff;
+        }
+
+        .icon-qunar {
+            background: #e8f7f7;
+        }
+
+        .icon-dy {
+            background: #eef1ff;
+        }
+
+        .icon-mt {
+            background: #fff7cf;
+        }
+
+        .icon-wifi {
+            background: #e8f3ff;
+        }
+
+        .icon-wx {
+            background: #e9f9e8;
+        }
+
+        .icon-channel {
+            background: #eef6ef;
+        }
+
+        .tile h3 {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.35;
+            color: #111;
+            text-align: center;
+        }
+
+        .tile p {
+            margin: 8px 0 0;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #7f879d;
+            min-height: 18px;
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px 12px;
+            margin-top: 12px;
+            border: none;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            background: #ff2442;
+            color: #fff;
+        }
+
+        button.secondary {
+            background: #111;
+        }
+
+        .copy-icon-btn {
+            display: none;
+            width: 100%;
+            height: auto;
+            padding: 12px 12px;
+            margin-top: 0;
+            border: none;
+            border-radius: 14px;
+            background: #111;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.2;
+            align-items: center;
+            justify-content: center;
+            justify-self: stretch;
+        }
+
+        .copy-icon-btn.show {
+            display: inline-flex;
+        }
+
+        .copy-icon-img {
+            display: none;
+        }
+
+        button:disabled {
+            opacity: .6;
+        }
+
+        .toolbar {
+            display: grid;
+            grid-template-columns:1fr auto;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .toolbar button {
+            margin-top: 0;
+        }
+
+        .result-actions {
+            display: none;
+        }
+
+        .result-actions.show {
+            display: grid;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid #d9def0;
+            font-size: 14px;
+            margin-top: 12px;
+            outline: none;
+            background: #fff;
+        }
+
+        #result {
+            display: none;
+            white-space: pre-wrap;
+            text-align: left;
+            margin-top: 14px;
+            padding: 14px;
+            background: #f7f8fc;
+            border-radius: 16px;
+            min-height: 120px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #111;
+            border: 1px solid #edf0f7;
+        }
+
+        #result.show {
+            display: block;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #666;
+            text-align: left;
+            margin-top: 12px;
+            line-height: 1.6;
+        }
+
+        .section-title {
+            margin: 0 0 12px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #32406d;
+        }
+
+        .wx-mask {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(180deg, #f4f4f6 0%, #eef1f7 100%);
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px 24px 28px;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .wx-mask.show {
+            display: flex;
+        }
+
+        .wx-mask-inner {
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            position: relative;
+            color: #2f2f2f;
+            transform: translateY(-16%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .wx-mask-close {
+            display: none;
+        }
+
+        .wx-mask-more {
+            position: absolute;
+            right: 0;
+            top: 2px;
+            width: 48px;
+            height: 36px;
+            border: none;
+            border-radius: 12px;
+            background: #e5e5e7;
+            color: #666;
+            font-size: 24px;
+            line-height: 36px;
+            padding: 0;
+            margin: 0;
+            cursor: default;
+        }
+
+        .wx-mask-title {
+            margin: 88px 0 18px;
+            font-size: 30px;
+            line-height: 1.2;
+            font-weight: 700;
+            color: #2f2f2f;
+        }
+
+        .wx-mask-desc {
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.9;
+            color: #4a4a4a;
+        }
+
+        .wx-mask-desc .highlight {
+            color: #1677ff;
+            font-weight: 600;
+        }
+
+        .wx-arrow {
+            position: absolute;
+            right: 20px;
+            top: 84px;
+            width: 96px;
+            height: 180px;
+            pointer-events: none;
+        }
+
+        .wx-phone {
+            width: 220px;
+            height: 400px;
+            margin: 28px auto 0;
+            border: 10px solid rgba(255, 255, 255, .9);
+            border-radius: 38px;
+            position: relative;
+            background: rgba(255, 255, 255, .22);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .35);
+            flex: 0 0 auto;
+        }
+
+        .wx-phone-notch {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            width: 92px;
+            height: 18px;
+            background: rgba(255, 255, 255, .92);
+            border-radius: 0 0 14px 14px;
+        }
+
+        .wx-phone-sheet {
+            position: absolute;
+            left: 12px;
+            right: 12px;
+            bottom: 16px;
+            height: 150px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, .28);
+        }
+
+        .wx-phone-grid {
+            position: absolute;
+            left: 26px;
+            right: 26px;
+            bottom: 42px;
+            display: grid;
+            grid-template-columns:repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        .wx-phone-grid span {
+            display: block;
+            height: 38px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, .48);
+        }
+
+        .wx-phone-focus {
+            position: absolute;
+            left: 50%;
+            bottom: 96px;
+            transform: translateX(-50%);
+            width: 144px;
+            height: 144px;
+            border-radius: 50%;
+            border: 8px solid rgba(255, 255, 255, .75);
+            background: rgba(255, 255, 255, .18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wx-phone-focus-inner {
+            width: 88px;
+            text-align: center;
+            color: #4a4a4a;
+            font-size: 14px;
+            line-height: 1.35;
+            font-weight: 600;
+        }
+
+        .wx-browser-icon {
+            width: 44px;
+            height: 44px;
+            margin: 0 auto 8px;
+            border-radius: 14px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
+            font-size: 24px;
+        }
+
+        .wx-mask-bottom-close {
+            width: 54px;
+            height: 54px;
+            margin: 20px auto 0;
+            border-radius: 50%;
+            border: 2px solid #8f8f94;
+            background: transparent;
+            color: #5a5a5f;
+            font-size: 28px;
+            line-height: 50px;
+            padding: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+        }
+
+        @media (max-height: 760px) {
+            .wx-mask {
+                padding: 28px 20px 22px;
+            }
+
+            .wx-mask-inner {
+                transform: translateY(-12%);
+            }
+
+            .wx-mask-title {
+                margin-top: 72px;
+            }
+
+            .wx-phone {
+                height: 360px;
+            }
+
+            .wx-mask-bottom-close {
+                margin-top: 14px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .platform-confirm-card {
+                border-radius: 20px;
+                padding: 22px 18px 18px;
+            }
+
+            .platform-confirm-title {
+                font-size: 18px;
+            }
+
+            .platform-confirm-desc {
+                font-size: 13px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .grid {
+                grid-template-columns:repeat(3, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .tile {
+                padding: 16px 14px;
+            }
+
+            .wifi-modal-card {
+                border-radius: 28px;
+                padding: 34px 20px 28px;
+            }
+
+            .wifi-modal-title {
+                font-size: 18px;
+                margin-bottom: 22px;
+            }
+
+            .wifi-info-row {
+                min-height: 60px;
+                padding: 0 14px;
+                gap: 8px;
+            }
+
+            .wifi-info-icon {
+                width: 24px;
+                flex-basis: 24px;
+                font-size: 16px;
+            }
+
+            .wifi-info-text {
+                font-size: 12px;
+            }
+
+            .copy-icon-btn {
+                width: 100%;
+                height: auto;
+                font-size: 14px;
+                border-radius: 14px;
+            }
+
+            .copy-icon-img {
+                display: none;
+            }
+
+            .wifi-copy-badge {
+                min-width: 78px;
+                height: 44px;
+                font-size: 14px;
+                padding: 0 12px;
+            }
+
+            .wifi-modal-close {
+                width: 58px;
+                height: 58px;
+                font-size: 30px;
+            }
+
+            .wechat-qr-desc {
+                font-size: 13px;
+                margin: -6px 0 18px;
+            }
+
+            .wechat-qr-box {
+                border-radius: 20px;
+                padding: 14px;
+            }
+
+            .wechat-qr-image {
+                max-width: 280px;
+                border-radius: 14px;
+            }
+        }
+
+        .platform-confirm-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .42);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            z-index: 10001;
+        }
+
+        .platform-confirm-overlay.show {
+            display: flex;
+        }
+
+        .platform-confirm-card {
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            border-radius: 24px;
+            padding: 26px 22px 22px;
+            text-align: center;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, .18);
+        }
+
+        .platform-confirm-title {
+            margin: 0 0 10px;
+            font-size: 20px;
+            line-height: 1.4;
+            color: #111;
+            font-weight: 700;
+        }
+
+        .platform-confirm-desc {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.75;
+            color: #666;
+            white-space: pre-line;
+        }
+
+        .platform-confirm-actions {
+            display: grid;
+            grid-template-columns:1fr 1fr;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .platform-confirm-actions button {
+            margin-top: 0;
+        }
+
+        .platform-confirm-cancel {
+            background: #f3f4f7;
+            color: #333;
+        }
+
+        .wifi-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .42);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            z-index: 10000;
+        }
+
+        .wifi-modal.show {
+            display: flex;
+        }
+
+        .wifi-modal-card {
+            width: 100%;
+            max-width: 640px;
+            background: #f4f4f5;
+            border-radius: 32px;
+            padding: 44px 28px 34px;
+            position: relative;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, .18);
+        }
+
+        .wifi-modal-title {
+            margin: 0 0 28px;
+            text-align: center;
+            font-size: 22px;
+            line-height: 1.4;
+            color: #222;
+            font-weight: 600;
+        }
+
+        .wifi-info-row {
+            min-height: 76px;
+            border-radius: 20px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 18px;
+            margin-bottom: 14px;
+        }
+
+        .wifi-password-row {
+            margin-bottom: 0;
+        }
+
+        .wifi-info-icon {
+            width: 32px;
+            text-align: center;
+            font-size: 22px;
+            line-height: 1;
+            flex: 0 0 32px;
+        }
+
+        .wifi-info-text {
+            font-size: 16px;
+            line-height: 1.4;
+            color: #222;
+            word-break: break-all;
+            flex: 1;
+            text-align: left;
+        }
+
+        .wifi-copy-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 96px;
+            height: 52px;
+            padding: 0 16px;
+            border-radius: 12px;
+            background: #dff4df;
+            color: #44a35f;
+            font-size: 16px;
+            font-weight: 600;
+            flex: 0 0 auto;
+        }
+
+        .wifi-modal-close {
+            width: 64px;
+            height: 64px;
+            margin: 26px auto 0;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, .92);
+            background: rgba(0, 0, 0, .18);
+            color: #fff;
+            font-size: 34px;
+            line-height: 1;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wechat-qr-card {
+            max-width: 460px;
+            text-align: center;
+        }
+
+        .wechat-qr-desc {
+            margin: -8px 0 22px;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #666;
+            text-align: center;
+        }
+
+        .wechat-qr-box {
+            background: #fff;
+            border-radius: 24px;
+            padding: 18px;
+            box-shadow: inset 0 0 0 1px #f0f0f0;
+        }
+
+        .wechat-qr-image {
+            display: block;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+            border-radius: 16px;
+            object-fit: contain;
+            background: #fff;
+        }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 28px;
+            transform: translateX(-50%) translateY(10px);
+            max-width: calc(100% - 32px);
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(17, 17, 17, .92);
+            color: #fff;
+            font-size: 13px;
+            line-height: 1.4;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, .18);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .18s ease, transform .18s ease;
+            z-index: 10003;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
 </head>
 
 <body>
-  <div class="page">
+<div class="page">
 
     <section class="panel">
-      <div class="panel-kicker">入住快捷助手</div>
-      <h3 class="panel-title">欢迎入住游牧地球民宿</h3>
-      <p class="panel-desc">很高兴与你相遇，愿你在这里住得舒服、玩得开心。下方为你准备了入住期间常用的快捷服务，点击即可使用。</p>
+        <div class="panel-kicker">入住快捷助手</div>
+        <h3 class="panel-title">欢迎入住游牧地球民宿</h3>
+        <p class="panel-desc">
+            很高兴与你相遇，愿你在这里住得舒服、玩得开心。下方为你准备了入住期间常用的快捷服务，点击即可使用。</p>
 
-      <div class="hint">
-        <div> ✨点击下方平台，即可自动生成对应平台文案：</div>
-        <div>1) 点击小红书 / 抖音 / 携程 / 美团 / 去哪儿，可自动生成适配点评或分享文案</div>
-        <div>2) 生成完成后，可重新生成或一键复制使用</div>
-        <div>3) WIFI、微信、小程序等功能也可以直接点击使用</div>
-      </div>
+        <div class="hint">
+            <div>✨ 点击下方平台，即可自动生成对应平台文案：</div>
+            <div>1) 点击小红书 / 抖音 / 携程 / 美团 / 去哪儿，可自动生成适配点评或分享文案</div>
+            <div>2) 生成完成后，可重新生成或一键复制使用</div>
+            <div>3) WIFI、微信、小程序等功能也可以直接点击使用</div>
+        </div>
 
-      <div id="result"></div>
+        <div id="result"></div>
 
-      <div id="resultActions" class="toolbar result-actions">
-        <button id="btnGen" onclick="generate()">重新生成</button>
-        <button id="btnCopy" class="copy-icon-btn" onclick="copyText()" aria-label="复制文案" title="复制文案">复制文案</button>
-      </div>
+        <div id="resultActions" class="toolbar result-actions">
+            <button id="btnGen" onclick="regenerateContent()">重新生成</button>
+            <button id="btnCopy" class="copy-icon-btn" onclick="copyText()" aria-label="复制文案" title="复制文案">
+                复制文案
+            </button>
+        </div>
     </section>
 
     <section class="panel">
-      <div class="grid">
-        <div class="tile" onclick="handlePlatformClick('xhs')">
-          <span class="gen-badge">生成文案</span>
-          <div class="tile-icon icon-xhs"><img src="./images/xhs.png" alt="小红书" /></div>
-          <h3>小红书</h3>
-        </div>
+        <div class="grid">
+            <div class="tile" data-platform="xhs" onclick="handlePlatformClick('xhs')">
+                <div class="tile-icon icon-xhs"><img src="./images/xhs.png" alt="小红书"/></div>
+                <h3>小红书</h3>
+                <p class="tile-hint">生成分享文案</p>
+            </div>
 
-        <div class="tile" onclick="handlePlatformClick('douyin')">
-          <span class="gen-badge">生成文案</span>
-          <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="抖音写评论" /></div>
-          <h3>抖音写评论</h3>
-        </div>
-        <div class="tile" onclick="handleRestrictedEntry()">
-          <div class="tile-icon icon-wx"><img src="./images/moments.png" alt="发朋友圈" /></div>
-          <h3>发朋友圈</h3>
-        </div>
+            <div class="tile" data-platform="douyin" onclick="handlePlatformClick('douyin')">
+                <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="抖音写评论"/></div>
+                <h3>抖音写评论</h3>
+                <p class="tile-hint">生成评论内容</p>
+            </div>
+            <div class="tile" data-platform="moments" onclick="handlePlatformClick('moments')">
+                <div class="tile-icon icon-wx"><img src="./images/moments.png" alt="发朋友圈"/></div>
+                <h3>发朋友圈</h3>
+                <p class="tile-hint">生成朋友圈文案</p>
+            </div>
 
-        <div class="tile" onclick="handlePlatformClick('ctrip')">
-          <span class="gen-badge">生成文案</span>
-          <div class="tile-icon icon-ctrip"><img src="./images/ctrip.png" alt="携程" /></div>
-          <h3>携程</h3>
-        </div>
+            <div class="tile" data-platform="ctrip" onclick="handlePlatformClick('ctrip')">
+                <div class="tile-icon icon-ctrip"><img src="./images/ctrip.png" alt="携程"/></div>
+                <h3>携程</h3>
+                <p class="tile-hint">生成点评内容</p>
+            </div>
 
-        <div class="tile" onclick="handlePlatformClick('qunar')">
-          <span class="gen-badge">生成文案</span>
-          <div class="tile-icon icon-qunar"><img src="./images/qunar.png" alt="去哪儿" /></div>
-          <h3>去哪儿</h3>
-        </div>
+            <div class="tile" data-platform="qunar" onclick="handlePlatformClick('qunar')">
+                <div class="tile-icon icon-qunar"><img src="./images/qunar.png" alt="去哪儿"/></div>
+                <h3>去哪儿</h3>
+                <p class="tile-hint">生成点评内容</p>
+            </div>
 
-        <div class="tile" onclick="handlePlatformClick('meituan')">
-          <span class="gen-badge">生成文案</span>
-          <div class="tile-icon icon-mt"><img src="./images/meituan.png" alt="美团" /></div>
-          <h3>美团</h3>
-        </div>
+            <div class="tile" data-platform="meituan" onclick="handlePlatformClick('meituan')">
+                <div class="tile-icon icon-mt"><img src="./images/meituan.png" alt="美团"/></div>
+                <h3>美团</h3>
+                <p class="tile-hint">生成评价内容</p>
+            </div>
 
-        <div class="tile" onclick="handleRestrictedEntry()">
-          <div class="tile-icon icon-channel"><img src="./images/wx_channel.png" alt="视频号" /></div>
-          <h3>关注视频号</h3>
+            <div class="tile" onclick="handleRestrictedEntry()">
+                <div class="tile-icon icon-channel"><img src="./images/wx_channel.png" alt="视频号"/></div>
+                <h3>关注视频号</h3>
+            </div>
+            <div class="tile" onclick="handleRestrictedEntry()">
+                <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="关注抖音"/></div>
+                <h3>关注抖音</h3>
+            </div>
+            <div class="tile" onclick="openMiniProgram()">
+                <div class="tile-icon icon-wx"><img src="./images/miniapp.png" alt="小程序"/></div>
+                <h3>小程序</h3>
+            </div>
+            <div class="tile" onclick="openWechatQrModal()">
+                <div class="tile-icon icon-wx"><img src="./images/wechat.png" alt="加微信"/></div>
+                <h3>加微信</h3>
+            </div>
+            <div class="tile" onclick="openWifiModal()">
+                <div class="tile-icon icon-wifi"><img src="./images/wifi.png" alt="连WIFI"/></div>
+                <h3>连WIFI</h3>
+            </div>
+            <div class="tile" onclick="handleRestrictedEntry()">
+                <div class="tile-icon icon-dp"><img src="./images/more.png" alt="更多"/></div>
+                <h3>更多</h3>
+            </div>
         </div>
-        <div class="tile" onclick="handleRestrictedEntry()">
-          <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="关注抖音" /></div>
-          <h3>关注抖音</h3>
-        </div>
-        <div class="tile" onclick="openMiniProgram()">
-          <div class="tile-icon icon-wx"><img src="./images/miniapp.png" alt="小程序" /></div>
-          <h3>小程序</h3>
-        </div>
-        <div class="tile" onclick="openWechatQrModal()">
-          <div class="tile-icon icon-wx"><img src="./images/wechat.png" alt="加微信"/></div>
-          <h3>加微信</h3>
-        </div>
-        <div class="tile" onclick="openWifiModal()">
-          <div class="tile-icon icon-wifi"><img src="./images/wifi.png" alt="连WIFI" /></div>
-          <h3>连WIFI</h3>
-        </div>
-        <div class="tile" onclick="handleRestrictedEntry()">
-          <div class="tile-icon icon-dp"><img src="./images/more.png" alt="更多" /></div>
-          <h3>更多</h3>
-        </div>
-      </div>
     </section>
-  </div>
+</div>
 
-  <div id="platformConfirmModal" class="platform-confirm-overlay" aria-hidden="true">
+<div id="platformConfirmModal" class="platform-confirm-overlay" aria-hidden="true">
     <div class="platform-confirm-card">
-      <h2 class="platform-confirm-title" id="platformConfirmTitle">文案已复制</h2>
-      <p class="platform-confirm-desc" id="platformConfirmDesc">你现在可以前往对应平台粘贴发布。</p>
-      <div class="platform-confirm-actions">
-        <button type="button" class="platform-confirm-cancel" onclick="hidePlatformConfirm()">取消</button>
-        <button type="button" id="platformConfirmGoBtn" onclick="confirmPlatformJump()">前往平台</button>
-      </div>
+        <h2 class="platform-confirm-title" id="platformConfirmTitle">文案已复制</h2>
+        <p class="platform-confirm-desc" id="platformConfirmDesc">你现在可以前往对应平台粘贴发布。</p>
+        <div class="platform-confirm-actions">
+            <button type="button" class="platform-confirm-cancel" onclick="hidePlatformConfirm()">取消</button>
+            <button type="button" id="platformConfirmGoBtn" onclick="confirmPlatformJump()">前往平台</button>
+        </div>
     </div>
-  </div>
+</div>
 
-  <div id="wechatMask" class="wx-mask" aria-hidden="true">
-      <div class="wx-mask-inner">
-          <button class="wx-mask-close" type="button" onclick="hideWechatGuide()">×</button>
-          <button class="wx-mask-more" type="button" aria-label="更多">···</button>
+<div id="wechatMask" class="wx-mask" aria-hidden="true">
+    <div class="wx-mask-inner">
+        <button class="wx-mask-close" type="button" onclick="hideWechatGuide()">×</button>
+        <button class="wx-mask-more" type="button" aria-label="更多">···</button>
 
-          <svg class="wx-arrow" viewBox="0 0 120 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M20 190C20 132 42 112 76 108C108 104 111 72 108 24" stroke="#b9bbc3" stroke-width="3"
-                    stroke-linecap="round" stroke-dasharray="9 10"/>
-              <path d="M100 34L108 18L116 34" stroke="#b9bbc3" stroke-width="3" stroke-linecap="round"
-                    stroke-linejoin="round"/>
-          </svg>
+        <svg class="wx-arrow" viewBox="0 0 120 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M20 190C20 132 42 112 76 108C108 104 111 72 108 24" stroke="#b9bbc3" stroke-width="3"
+                  stroke-linecap="round" stroke-dasharray="9 10"/>
+            <path d="M100 34L108 18L116 34" stroke="#b9bbc3" stroke-width="3" stroke-linecap="round"
+                  stroke-linejoin="round"/>
+        </svg>
 
-          <h2 class="wx-mask-title">还差1步得好礼</h2>
-          <p class="wx-mask-desc">
-              由于微信限制，请点击右上角 <span
-                  style="display:inline-block;background:#e5e5e7;color:#666;border-radius:10px;padding:0 10px;line-height:1.5;">···</span><br>
-              选择 <span class="highlight">“在浏览器打开”</span>
-          </p>
+        <h2 class="wx-mask-title">还差1步得好礼</h2>
+        <p class="wx-mask-desc">
+            由于微信限制，请点击右上角 <span
+                style="display:inline-block;background:#e5e5e7;color:#666;border-radius:10px;padding:0 10px;line-height:1.5;">···</span><br>
+            选择 <span class="highlight">“在浏览器打开”</span>
+        </p>
 
-          <div class="wx-phone" aria-hidden="true">
-              <div class="wx-phone-notch"></div>
-              <div class="wx-phone-sheet"></div>
-              <div class="wx-phone-grid">
-                  <span></span><span></span><span></span><span></span>
-                  <span></span><span></span><span></span><span></span>
-              </div>
-              <div class="wx-phone-focus">
-                  <div class="wx-phone-focus-inner">
-                      <div class="wx-browser-icon">🌐</div>
-                      在浏览器打开
-                  </div>
-              </div>
-          </div>
+        <div class="wx-phone" aria-hidden="true">
+            <div class="wx-phone-notch"></div>
+            <div class="wx-phone-sheet"></div>
+            <div class="wx-phone-grid">
+                <span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="wx-phone-focus">
+                <div class="wx-phone-focus-inner">
+                    <div class="wx-browser-icon">🌐</div>
+                    在浏览器打开
+                </div>
+            </div>
+        </div>
 
-          <button class="wx-mask-bottom-close" type="button" onclick="hideWechatGuide()">×</button>
-      </div>
-  </div>
-  <div id="wifiModal" class="wifi-modal" aria-hidden="true">
-      <div class="wifi-modal-card">
-          <h2 class="wifi-modal-title">已复制密码，去系统页连接吧</h2>
+        <button class="wx-mask-bottom-close" type="button" onclick="hideWechatGuide()">×</button>
+    </div>
+</div>
+<div id="wifiModal" class="wifi-modal" aria-hidden="true">
+    <div class="wifi-modal-card">
+        <h2 class="wifi-modal-title">已复制密码，去系统页连接吧</h2>
 
-          <div class="wifi-info-row">
-              <div class="wifi-info-icon">📶</div>
-              <div class="wifi-info-text">游牧地球民宿</div>
-          </div>
+        <div class="wifi-info-row">
+            <div class="wifi-info-icon">📶</div>
+            <div class="wifi-info-text">游牧地球民宿</div>
+        </div>
 
-          <div class="wifi-info-row wifi-password-row">
-              <div class="wifi-info-icon">🔒</div>
-              <div class="wifi-info-text">ymdq888888</div>
-              <span class="wifi-copy-badge" id="wifiCopyBadge">已复制</span>
-          </div>
+        <div class="wifi-info-row wifi-password-row">
+            <div class="wifi-info-icon">🔒</div>
+            <div class="wifi-info-text">ymdq888888</div>
+            <span class="wifi-copy-badge" id="wifiCopyBadge">已复制</span>
+        </div>
 
-          <button class="wifi-modal-close" type="button" onclick="hideWifiModal()">×</button>
-      </div>
-  </div>
-  <div id="wechatQrModal" class="wifi-modal" aria-hidden="true">
-      <div class="wifi-modal-card wechat-qr-card">
-          <h2 class="wifi-modal-title">长按识别二维码添加微信</h2>
-          <p class="wechat-qr-desc">若无法直接识别，可截图后打开微信扫一扫，从相册中选择二维码。</p>
+        <button class="wifi-modal-close" type="button" onclick="hideWifiModal()">×</button>
+    </div>
+</div>
+<div id="wechatQrModal" class="wifi-modal" aria-hidden="true">
+    <div class="wifi-modal-card wechat-qr-card">
+        <h2 class="wifi-modal-title">长按识别二维码添加微信</h2>
+        <p class="wechat-qr-desc">若无法直接识别，可截图后打开微信扫一扫，从相册中选择二维码。</p>
 
-          <div class="wechat-qr-box">
-              <img class="wechat-qr-image" src="./images/wechat_qr.png" alt="微信二维码"/>
-          </div>
+        <div class="wechat-qr-box">
+            <img class="wechat-qr-image" src="./images/wechat_qr.png" alt="微信二维码"/>
+        </div>
 
-          <button class="wifi-modal-close" type="button" onclick="hideWechatQrModal()">×</button>
-      </div>
-  </div>
+        <button class="wifi-modal-close" type="button" onclick="hideWechatQrModal()">×</button>
+    </div>
+</div>
+<div id="toast" class="toast" aria-hidden="true"></div>
 <script>
-  let generatedText = "";
-  let isGenerating = false;
-  let selectedPlatform = "xhs";
-  let pendingPlatform = "";
-
-  function isWeChatBrowser(){
-    return /MicroMessenger/i.test(window.navigator.userAgent || "");
-  }
-
-  function showWechatGuide(){
-    const mask = document.getElementById("wechatMask");
-    if (!mask) return;
-    mask.classList.add("show");
-    mask.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
-  }
-
-  function hideWechatGuide(){
-    const mask = document.getElementById("wechatMask");
-    if (!mask) return;
-    mask.classList.remove("show");
-    mask.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
-  }
-
-  function guardWechatOpen(action){
-    if (isWeChatBrowser()){
-      showWechatGuide();
-      return false;
-    }
-    if (typeof action === "function") {
-      action();
-    }
-    return true;
-  }
-
-  function handleRestrictedEntry(){
-    return guardWechatOpen(() => {
-      alert("功能正在开发中…");
-    });
-  }
-
-  async function copyWifiPassword() {
-    const password = "ymdq888888";
-    try {
-      await navigator.clipboard.writeText(password);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  async function openWifiModal() {
-    return guardWechatOpen(async () => {
-      await copyWifiPassword();
-      const modal = document.getElementById("wifiModal");
-      const badge = document.getElementById("wifiCopyBadge");
-      if (!modal) return;
-
-      if (badge) {
-        badge.innerText = "已复制";
-      }
-
-      modal.classList.add("show");
-      modal.setAttribute("aria-hidden", "false");
-      document.body.style.overflow = "hidden";
-    });
-  }
-
-  function hideWifiModal() {
-    const modal = document.getElementById("wifiModal");
-    if (!modal) return;
-    modal.classList.remove("show");
-    modal.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
-  }
-
-  function openWechatQrModal() {
-    return guardWechatOpen(() => {
-      const modal = document.getElementById("wechatQrModal");
-      if (!modal) return;
-      modal.classList.add("show");
-      modal.setAttribute("aria-hidden", "false");
-      document.body.style.overflow = "hidden";
-    });
-  }
-
-  function openMiniProgram(){
-    guardWechatOpen(() => {
-      const urlLink = "https://wxaurl.cn/CpKpBx0kXen3B0A";
-      window.location.href = urlLink;
-    });
-  }
-
-  function hideWechatQrModal(){
-    const modal = document.getElementById("wechatQrModal");
-    if (!modal) return;
-    modal.classList.remove("show");
-    modal.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
-  }
-
-  function setStatus(text){
-    const resultEl = document.getElementById("result");
-    if (!resultEl) return;
-    resultEl.classList.add("show");
-    resultEl.innerText = text;
-  }
-
-  function updateGenerateUI(hasResult){
-    const actions = document.getElementById("resultActions");
-    const resultEl = document.getElementById("result");
-
-    if (resultEl) {
-      resultEl.classList.toggle("show", !!hasResult);
-    }
-    if (actions) {
-      actions.classList.toggle("show", !!hasResult);
-    }
-  }
-
-  function setSelectedPlatform(platform){
-    selectedPlatform = platform;
-  }
-
-  function showPlatformConfirm(platform){
-    const modal = document.getElementById("platformConfirmModal");
-    const titleEl = document.getElementById("platformConfirmTitle");
-    const descEl = document.getElementById("platformConfirmDesc");
-    const goBtn = document.getElementById("platformConfirmGoBtn");
-    const label = getPlatformLabel(platform);
-
-    pendingPlatform = platform;
-
-    if (titleEl) titleEl.innerText = "文案已复制";
-    if (descEl) descEl.innerText = `已为你生成并复制${label}文案\n现在可以直接前往${label}粘贴发布。`;
-    if (goBtn) goBtn.innerText = platform === "qunar" ? "知道了" : `前往${label}`;
-
-    if (!modal) return;
-    modal.classList.add("show");
-    modal.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
-  }
-
-  function hidePlatformConfirm(){
-    const modal = document.getElementById("platformConfirmModal");
-    if (!modal) return;
-    modal.classList.remove("show");
-    modal.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
-  }
-
-  function confirmPlatformJump(){
-    const platform = pendingPlatform || selectedPlatform;
-    hidePlatformConfirm();
-
-    if (platform === "xhs") return openXHS();
-    if (platform === "douyin") return openDouyin();
-    if (platform === "ctrip") return openCtrip();
-    if (platform === "meituan") return openMeituan();
-    if (platform === "qunar") {
-      alert("去哪儿跳转功能正在开发中…");
-      return;
-    }
-  }
-
-  async function handlePlatformClick(platform){
-    if (isGenerating) return;
-    setSelectedPlatform(platform);
-    const ok = await generate(true);
-    if (ok) {
-      showPlatformConfirm(platform);
-    }
-  }
-
-  function getPlatformLabel(platform){
-    const map = {
-      xhs: "小红书",
-      qunar: "去哪儿",
-      douyin: "抖音",
-      meituan: "美团",
-      ctrip: "携程"
+    let generatedText = "";
+    let isGenerating = false;
+    let selectedPlatform = "xhs";
+    let pendingPlatform = "";
+    let generatingPlatform = "";
+    let toastTimer = null;
+    const platformContentMap = {
+        xhs: "",
+        douyin: "",
+        moments: "",
+        ctrip: "",
+        qunar: "",
+        meituan: ""
     };
-    return map[platform] || "当前平台";
-  }
 
-  function buildPromptByPlatform(platform){
-    if (platform === "xhs") {
-      return `
+    async function writeClipboardText(text) {
+        if (!text || !text.trim()) return false;
+        try {
+            await navigator.clipboard.writeText(text);
+            return true;
+        } catch (e) {
+            try {
+                const textarea = document.createElement("textarea");
+                textarea.value = text;
+                textarea.setAttribute("readonly", "readonly");
+                textarea.style.position = "fixed";
+                textarea.style.top = "-9999px";
+                textarea.style.opacity = "0";
+                document.body.appendChild(textarea);
+                textarea.focus();
+                textarea.select();
+                textarea.setSelectionRange(0, textarea.value.length);
+                const ok = document.execCommand("copy");
+                textarea.remove();
+                return !!ok;
+            } catch (err) {
+                return false;
+            }
+        }
+    }
+
+    function isWeChatBrowser() {
+        return /MicroMessenger/i.test(window.navigator.userAgent || "");
+    }
+
+    function showWechatGuide() {
+        const mask = document.getElementById("wechatMask");
+        if (!mask) return;
+        mask.classList.add("show");
+        mask.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+    }
+
+    function hideWechatGuide() {
+        const mask = document.getElementById("wechatMask");
+        if (!mask) return;
+        mask.classList.remove("show");
+        mask.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+    }
+
+    function guardWechatOpen(action) {
+        if (isWeChatBrowser()) {
+            showWechatGuide();
+            return false;
+        }
+        if (typeof action === "function") {
+            action();
+        }
+        return true;
+    }
+
+    function handleRestrictedEntry() {
+        return guardWechatOpen(() => {
+            showToast("该功能正在开发中");
+        });
+    }
+
+    async function copyWifiPassword() {
+        const password = "ymdq888888";
+        return await writeClipboardText(password);
+    }
+
+    async function openWifiModal() {
+        return guardWechatOpen(async () => {
+            await copyWifiPassword();
+            const modal = document.getElementById("wifiModal");
+            const badge = document.getElementById("wifiCopyBadge");
+            if (!modal) return;
+
+            if (badge) {
+                badge.innerText = "已复制";
+            }
+
+            modal.classList.add("show");
+            modal.setAttribute("aria-hidden", "false");
+            document.body.style.overflow = "hidden";
+        });
+    }
+
+    function hideWifiModal() {
+        const modal = document.getElementById("wifiModal");
+        if (!modal) return;
+        modal.classList.remove("show");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+    }
+
+    function openWechatQrModal() {
+        return guardWechatOpen(() => {
+            const modal = document.getElementById("wechatQrModal");
+            if (!modal) return;
+            modal.classList.add("show");
+            modal.setAttribute("aria-hidden", "false");
+            document.body.style.overflow = "hidden";
+        });
+    }
+
+    function openMiniProgram() {
+        guardWechatOpen(() => {
+            const urlLink = "https://wxaurl.cn/CpKpBx0kXen3B0A";
+            window.location.href = urlLink;
+        });
+    }
+
+    function openWechatMoments() {
+        guardWechatOpen(() => {
+            if (generatedText.trim()) {
+                writeClipboardText(generatedText);
+            }
+
+            const appUrls = [
+                "weixin://dl/moments",
+                "weixin://dl/timeline"
+            ];
+            const start = Date.now();
+            let hasHidden = false;
+            let cleanupTimer = null;
+            let iframe = null;
+            let link = null;
+
+            const clearFallback = () => {
+                if (cleanupTimer) {
+                    clearTimeout(cleanupTimer);
+                    cleanupTimer = null;
+                }
+                document.removeEventListener("visibilitychange", onVisibilityChange);
+                window.removeEventListener("pagehide", clearFallback);
+                window.removeEventListener("blur", clearFallback);
+                if (iframe) {
+                    iframe.remove();
+                    iframe = null;
+                }
+                if (link) {
+                    link.remove();
+                    link = null;
+                }
+            };
+
+            const onVisibilityChange = () => {
+                if (document.hidden) {
+                    hasHidden = true;
+                    clearFallback();
+                }
+            };
+
+            const fallbackToWeChat = () => {
+                if (hasHidden) return;
+                if (Date.now() - start < 2500) {
+                    window.location.href = "weixin://";
+                }
+            };
+
+            document.addEventListener("visibilitychange", onVisibilityChange);
+            window.addEventListener("pagehide", clearFallback, {once: true});
+            window.addEventListener("blur", clearFallback, {once: true});
+
+            link = document.createElement("a");
+            link.href = appUrls[0];
+            link.style.display = "none";
+            document.body.appendChild(link);
+            link.click();
+
+            setTimeout(() => {
+                if (hasHidden) return;
+                iframe = document.createElement("iframe");
+                iframe.style.display = "none";
+                iframe.src = appUrls[1];
+                document.body.appendChild(iframe);
+            }, 180);
+
+            cleanupTimer = setTimeout(() => {
+                clearFallback();
+                fallbackToWeChat();
+            }, 1400);
+        });
+    }
+
+    function hideWechatQrModal() {
+        const modal = document.getElementById("wechatQrModal");
+        if (!modal) return;
+        modal.classList.remove("show");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+    }
+
+    function setStatus(text) {
+        const resultEl = document.getElementById("result");
+        if (!resultEl) return;
+        resultEl.classList.add("show");
+        resultEl.innerText = text;
+    }
+
+    function updateGenerateUI(hasResult) {
+        const actions = document.getElementById("resultActions");
+        const resultEl = document.getElementById("result");
+
+        if (resultEl) {
+            resultEl.classList.toggle("show", !!hasResult);
+        }
+        if (actions) {
+            actions.classList.toggle("show", !!hasResult);
+        }
+    }
+
+    function setSelectedPlatform(platform) {
+        selectedPlatform = platform;
+    }
+
+    function showToast(message, duration = 2200) {
+        const toast = document.getElementById("toast");
+        if (!toast) return;
+        toast.innerText = message;
+        toast.classList.add("show");
+        toast.setAttribute("aria-hidden", "false");
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+            toast.classList.remove("show");
+            toast.setAttribute("aria-hidden", "true");
+        }, duration);
+    }
+
+    function updatePlatformBadges() {
+        const tiles = document.querySelectorAll('.tile[data-platform]');
+        tiles.forEach(tile => {
+            const platform = tile.getAttribute('data-platform');
+            const hint = tile.querySelector('.tile-hint');
+            if (!hint) return;
+
+            const hasContent = !!(platformContentMap[platform] || "").trim();
+            const isLoading = generatingPlatform === platform;
+            const shouldDisable = !!generatingPlatform && generatingPlatform !== platform;
+            const isQunar = platform === "qunar";
+
+            tile.classList.toggle('is-loading', isLoading);
+            tile.classList.toggle('is-disabled', shouldDisable);
+            tile.classList.toggle('is-ready', hasContent && !isLoading);
+
+            if (isLoading) {
+                hint.innerText = '正在生成...';
+                return;
+            }
+
+            if (hasContent) {
+                hint.innerText = isQunar ? '已生成，可复制使用' : '已生成，点击可直接前往';
+                return;
+            }
+
+            if (platform === 'xhs') {
+                hint.innerText = '生成分享文案';
+            } else if (platform === 'douyin') {
+                hint.innerText = '生成评论内容';
+            } else if (platform === 'moments') {
+                hint.innerText = '生成朋友圈文案';
+            } else if (platform === 'meituan') {
+                hint.innerText = '生成评价内容';
+            } else {
+                hint.innerText = '生成点评内容';
+            }
+        });
+    }
+
+    function showPlatformConfirm(platform, copied = false) {
+        const modal = document.getElementById("platformConfirmModal");
+        const titleEl = document.getElementById("platformConfirmTitle");
+        const descEl = document.getElementById("platformConfirmDesc");
+        const goBtn = document.getElementById("platformConfirmGoBtn");
+        const label = getPlatformLabel(platform);
+        const isQunar = platform === "qunar";
+        const isMoments = platform === "moments";
+
+        pendingPlatform = platform;
+
+        if (titleEl) {
+            titleEl.innerText = isQunar
+                ? "文案已生成"
+                : (copied ? "文案已复制" : "文案已生成");
+        }
+
+        if (descEl) {
+            if (isQunar) {
+                descEl.innerText = copied
+                    ? `已为你生成并复制${label}文案。\n${label}暂不支持自动跳转，请手动打开 App 粘贴发布。`
+                    : `已为你生成${label}文案。\n请先点击下方“复制文案”，再手动打开 ${label} App 粘贴发布。`;
+            } else if (isMoments) {
+                descEl.innerText = copied
+                    ? `已为你生成并复制${label}文案\n现在可以直接前往微信粘贴发布。`
+                    : `已为你生成${label}文案，但系统未完成自动复制。\n请先点击下方“复制文案”，再前往微信粘贴发布。`;
+            } else {
+                descEl.innerText = copied
+                    ? `已为你生成并复制${label}文案\n现在可以直接前往${label}粘贴发布。`
+                    : `已为你生成${label}文案，但系统未完成自动复制。\n请先点击下方“复制文案”，再前往${label}粘贴发布。`;
+            }
+        }
+
+        if (goBtn) goBtn.innerText = isQunar ? "知道了" : (isMoments ? "前往微信" : `前往${label}`);
+
+        if (!modal) return;
+        modal.classList.add("show");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+    }
+
+    function hidePlatformConfirm() {
+        const modal = document.getElementById("platformConfirmModal");
+        if (!modal) return;
+        modal.classList.remove("show");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+    }
+
+    function confirmPlatformJump() {
+        const platform = pendingPlatform || selectedPlatform;
+        hidePlatformConfirm();
+
+        if (platform === "xhs") return openXHS();
+        if (platform === "douyin") return openDouyin();
+        if (platform === "moments") return openWechatMoments();
+        if (platform === "ctrip") return openCtrip();
+        if (platform === "meituan") return openMeituan();
+        if (platform === "qunar") {
+            showToast("去哪儿暂不支持自动跳转，请手动打开 App 发布");
+            return;
+        }
+    }
+
+    async function handlePlatformClick(platform) {
+        if (isGenerating) return;
+
+        setSelectedPlatform(platform);
+
+        const cachedText = (platformContentMap[platform] || "").trim();
+        if (cachedText) {
+            generatedText = cachedText;
+            setStatus(generatedText);
+            document.getElementById("btnCopy").classList.add("show");
+            updateGenerateUI(true);
+            updatePlatformBadges();
+
+            const copied = await writeClipboardText(generatedText);
+
+            if (platform === "qunar") {
+                showPlatformConfirm(platform, copied);
+                return;
+            }
+
+            if (copied) {
+                showToast(platform === "qunar" ? `${getPlatformLabel(platform)}文案已复制` : `${getPlatformLabel(platform)}文案已复制，正在打开平台`, 1800);
+                pendingPlatform = platform;
+                confirmPlatformJump();
+            } else {
+                showPlatformConfirm(platform, false);
+            }
+            return;
+        }
+
+        const ok = await generate();
+        if (ok) {
+            const copied = await writeClipboardText(generatedText);
+            showPlatformConfirm(platform, copied);
+        }
+    }
+
+    function getPlatformLabel(platform) {
+        const map = {
+            xhs: "小红书",
+            qunar: "去哪儿",
+            douyin: "抖音",
+            moments: "朋友圈",
+            meituan: "美团",
+            ctrip: "携程"
+        };
+        return map[platform] || "当前平台";
+    }
+
+    function buildPromptByPlatform(platform) {
+        if (platform === "xhs") {
+            return `
 请写一篇适合门店评价、种草分享、短内容发布的真实入住体验文案，并且不能忽略以下任何一个要求：
 
 地点：拉萨
@@ -1010,9 +1384,25 @@
 结尾直接补充3-5个标签（#开头），单独一行展示即可。
 整体看起来像可以直接复制发布的成品文案。
 `.trim();
-    }
+        }
 
-    return `
+        if (platform === "moments") {
+            return `
+请写一段适合发微信朋友圈的真实入住分享文案，并且不能忽略以下任何一个要求：
+
+地点：拉萨
+场景：旅行入住体验
+风格：真实、自然、轻松、有生活感
+用途：发微信朋友圈
+
+输出要求：
+只输出最终可直接发布的正文，不要标题，不要标签，不要引号，不要解释说明。
+正文控制在20到140字之间，自然像本人随手分享，不要太像广告。
+内容要体现入住感受、氛围或旅途状态，语言真诚舒服，可以有轻微分享感，但不要夸张。
+`.trim();
+        }
+
+        return `
 请写一段适合酒店点评或短评发布的真实入住体验文案，并且不能忽略以下任何一个要求：
 
 地点：拉萨
@@ -1025,265 +1415,295 @@
 字数限制在30到60字之间。
 内容要像真实住客写的简短好评，语言自然，不要过度夸张。
 `.trim();
-  }
+    }
 
-  async function generate(silentCopy = false){
-    if (isGenerating) return;
+    async function generate() {
+        if (isGenerating) return;
 
-    const apiKey = "sk-a1c92c976b554fc8b3b7d55776515597";
+        const apiKey = "sk-a1c92c976b554fc8b3b7d55776515597";
 
-    isGenerating = true;
-    document.getElementById("btnGen").disabled = true;
-    document.getElementById("btnCopy").disabled = true;
-    document.getElementById("btnCopy").classList.remove("show");
+        isGenerating = true;
+        generatingPlatform = selectedPlatform;
+        updatePlatformBadges();
+        document.getElementById("btnGen").disabled = true;
+        document.getElementById("btnCopy").disabled = true;
+        document.getElementById("btnCopy").classList.remove("show");
 
-    const platformLabel = getPlatformLabel(selectedPlatform);
-    setStatus(`正在生成中...\n正在为${platformLabel}生成适配文案\n`);
+        const platformLabel = getPlatformLabel(selectedPlatform);
+        setStatus(`正在生成中...\n正在为${platformLabel}生成适配文案\n`);
 
-    const prompt = buildPromptByPlatform(selectedPlatform);
+        const prompt = buildPromptByPlatform(selectedPlatform);
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 20000);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 20000);
 
-    try{
-      const res = await fetch("https://api.deepseek.com/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + apiKey
-        },
-        body: JSON.stringify({
-          model: "deepseek-chat",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.8,
-          stream: false
-        }),
-        signal: controller.signal
-      });
+        try {
+            const res = await fetch("https://api.deepseek.com/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + apiKey
+                },
+                body: JSON.stringify({
+                    model: "deepseek-chat",
+                    messages: [{role: "user", content: prompt}],
+                    temperature: 0.8,
+                    stream: false
+                }),
+                signal: controller.signal
+            });
 
-      clearTimeout(timeoutId);
+            clearTimeout(timeoutId);
 
-      if (!res.ok){
-        let bodyText = "";
-        try { bodyText = await res.text(); } catch(e) {}
-        setStatus(`请求失败：HTTP ${res.status} ${res.statusText}\n\n${bodyText}`);
+            if (!res.ok) {
+                let bodyText = "";
+                try {
+                    bodyText = await res.text();
+                } catch (e) {
+                }
+                setStatus(`请求失败：HTTP ${res.status} ${res.statusText}\n\n${bodyText}`);
+                if (!generatedText.trim()) {
+                    updateGenerateUI(false);
+                }
+                return false;
+            }
+
+            const data = await res.json();
+            const content = data?.choices?.[0]?.message?.content;
+
+            if (!content) {
+                setStatus("请求成功但没有拿到 content。\n\n返回：\n" + JSON.stringify(data, null, 2));
+                if (!generatedText.trim()) {
+                    updateGenerateUI(false);
+                }
+                return false;
+            }
+
+            generatedText = content;
+            platformContentMap[selectedPlatform] = content;
+            setStatus(generatedText);
+            document.getElementById("btnCopy").classList.add("show");
+            updateGenerateUI(true);
+            updatePlatformBadges();
+
+            return true;
+
+        } catch (e) {
+            if (e?.name === "AbortError") {
+                setStatus("请求超时，请稍后重试。");
+            } else {
+                setStatus("生成失败：" + (e?.message || e));
+            }
+            if (!generatedText.trim()) {
+                updateGenerateUI(false);
+            }
+            return false;
+        } finally {
+            isGenerating = false;
+            generatingPlatform = "";
+            updatePlatformBadges();
+            document.getElementById("btnGen").disabled = false;
+            document.getElementById("btnCopy").disabled = false;
+        }
+    }
+
+    async function regenerateContent() {
+        const ok = await generate();
+        if (!ok) return;
+
+        const copied = await writeClipboardText(generatedText);
+
+        if (copied) {
+            const platform = selectedPlatform;
+            const isQunar = platform === "qunar";
+
+            if (isQunar) {
+                showPlatformConfirm(platform, true);
+            } else {
+                showToast(`${getPlatformLabel(platform)}文案已重新生成并复制`);
+            }
+        } else {
+            showToast("文案已重新生成，但自动复制失败", 2600);
+        }
+    }
+
+
+    async function copyText() {
         if (!generatedText.trim()) {
-          updateGenerateUI(false);
+            showToast("还没有可复制的文案，请先选择平台生成");
+            return;
         }
-        return false;
-      }
 
-      const data = await res.json();
-      const content = data?.choices?.[0]?.message?.content;
-
-      if (!content){
-        setStatus("请求成功但没有拿到 content。\n\n返回：\n" + JSON.stringify(data, null, 2));
-        if (!generatedText.trim()) {
-          updateGenerateUI(false);
+        const copied = await writeClipboardText(generatedText);
+        if (copied) {
+            showToast("文案已复制");
+        } else {
+            showToast("复制失败，请长按下方内容手动复制", 2600);
         }
-        return false;
-      }
-
-      generatedText = content;
-      setStatus(generatedText);
-      document.getElementById("btnCopy").classList.add("show");
-      updateGenerateUI(true);
-
-      if (silentCopy) { try { await navigator.clipboard.writeText(generatedText); } catch(e) {} }
-      return true;
-
-    }catch(e){
-      if (e?.name === "AbortError"){
-        setStatus("请求超时，请稍后重试。");
-      } else {
-        setStatus("生成失败：" + (e?.message || e));
-      }
-      if (!generatedText.trim()) {
-        updateGenerateUI(false);
-      }
-      return false;
-    }finally{
-      isGenerating = false;
-      document.getElementById("btnGen").disabled = false;
-      document.getElementById("btnCopy").disabled = false;
-    }
-  }
-
-  async function copyText(){
-    if (!generatedText.trim()){
-      alert("还没有生成内容哦，请先点击“一键生成内容”。");
-      return;
     }
 
-    try{
-      await navigator.clipboard.writeText(generatedText);
-      alert("文案已复制 ✅");
-    }catch(e){
-      alert("复制失败！\n你可以长按下方内容手动全选复制。");
+    function openDouyin() {
+        guardWechatOpen(() => {
+            const douyinStoreWebUrl = "https://life-share.scsjsd.com/falcon/poi_mwa/poi_detail?poi_id=7279650606363445289&app=aweme&biz_code=trip";
+            const poiId = "7279650606363445289";
+            const appUrls = [
+                "snssdk1128://poi/detail?id=" + encodeURIComponent(poiId),
+                "snssdk1128://poi/detail?poi_id=" + encodeURIComponent(poiId),
+                "snssdk1128://webview?url=" + encodeURIComponent(douyinStoreWebUrl)
+            ];
+            const start = Date.now();
+            let hasHidden = false;
+            let cleanupTimer = null;
+            let iframe = null;
+            let link = null;
+
+            const clearFallback = () => {
+                if (cleanupTimer) {
+                    clearTimeout(cleanupTimer);
+                    cleanupTimer = null;
+                }
+                document.removeEventListener("visibilitychange", onVisibilityChange);
+                window.removeEventListener("pagehide", clearFallback);
+                window.removeEventListener("blur", clearFallback);
+                if (iframe) {
+                    iframe.remove();
+                    iframe = null;
+                }
+                if (link) {
+                    link.remove();
+                    link = null;
+                }
+            };
+
+            const onVisibilityChange = () => {
+                if (document.hidden) {
+                    hasHidden = true;
+                    clearFallback();
+                }
+            };
+
+            const fallbackToWeb = () => {
+                if (hasHidden) return;
+                if (Date.now() - start < 2500) {
+                    window.location.href = douyinStoreWebUrl;
+                }
+            };
+
+            document.addEventListener("visibilitychange", onVisibilityChange);
+            window.addEventListener("pagehide", clearFallback, {once: true});
+            window.addEventListener("blur", clearFallback, {once: true});
+
+            link = document.createElement("a");
+            link.href = appUrls[0];
+            link.style.display = "none";
+            document.body.appendChild(link);
+            link.click();
+
+            setTimeout(() => {
+                if (hasHidden) return;
+                iframe = document.createElement("iframe");
+                iframe.style.display = "none";
+                iframe.src = appUrls[1];
+                document.body.appendChild(iframe);
+            }, 180);
+
+            setTimeout(() => {
+                if (hasHidden || !iframe) return;
+                iframe.src = appUrls[2];
+            }, 420);
+
+            cleanupTimer = setTimeout(() => {
+                clearFallback();
+                fallbackToWeb();
+            }, 1400);
+        });
     }
-  }
 
-  function openDouyin(){
-    guardWechatOpen(() => {
-      const douyinStoreWebUrl = "https://life-share.scsjsd.com/falcon/poi_mwa/poi_detail?poi_id=7279650606363445289&app=aweme&biz_code=trip";
-      const poiId = "7279650606363445289";
-      const appUrls = [
-        "snssdk1128://poi/detail?id=" + encodeURIComponent(poiId),
-        "snssdk1128://poi/detail?poi_id=" + encodeURIComponent(poiId),
-        "snssdk1128://webview?url=" + encodeURIComponent(douyinStoreWebUrl)
-      ];
-      const start = Date.now();
-      let hasHidden = false;
-      let cleanupTimer = null;
-      let iframe = null;
-      let link = null;
+    function openXHS() {
+        guardWechatOpen(() => {
+            if (generatedText.trim()) {
+                writeClipboardText(generatedText);
+            }
 
-      const clearFallback = () => {
-        if (cleanupTimer) {
-          clearTimeout(cleanupTimer);
-          cleanupTimer = null;
-        }
-        document.removeEventListener("visibilitychange", onVisibilityChange);
-        window.removeEventListener("pagehide", clearFallback);
-        window.removeEventListener("blur", clearFallback);
-        if (iframe) {
-          iframe.remove();
-          iframe = null;
-        }
-        if (link) {
-          link.remove();
-          link = null;
-        }
-      };
+            const appUrl = "xhsdiscover://post_note?ignore_draft=true";
 
-      const onVisibilityChange = () => {
-        if (document.hidden) {
-          hasHidden = true;
-          clearFallback();
-        }
-      };
+            const link = document.createElement("a");
+            link.href = appUrl;
+            link.style.display = "none";
+            document.body.appendChild(link);
+            link.click();
 
-      const fallbackToWeb = () => {
-        if (hasHidden) return;
-        if (Date.now() - start < 2500) {
-          window.location.href = douyinStoreWebUrl;
-        }
-      };
+            setTimeout(() => {
+                link.remove();
+            }, 800);
+        });
+    }
 
-      document.addEventListener("visibilitychange", onVisibilityChange);
-      window.addEventListener("pagehide", clearFallback, { once: true });
-      window.addEventListener("blur", clearFallback, { once: true });
+    function openMeituan() {
+        guardWechatOpen(() => {
+            const shopId = "564151165";
+            const hotelH5Url = "https://i.meituan.com/awp/h5/hotel/poi/deal.html?poiId=" + shopId;
+            const encodedHotelH5Url = encodeURIComponent(hotelH5Url);
+            const appUrl = "imeituan://www.meituan.com/web?url=" + encodedHotelH5Url;
 
-      link = document.createElement("a");
-      link.href = appUrls[0];
-      link.style.display = "none";
-      document.body.appendChild(link);
-      link.click();
+            const link = document.createElement("a");
+            link.href = appUrl;
+            link.style.display = "none";
+            document.body.appendChild(link);
+            link.click();
 
-      setTimeout(() => {
-        if (hasHidden) return;
-        iframe = document.createElement("iframe");
-        iframe.style.display = "none";
-        iframe.src = appUrls[1];
-        document.body.appendChild(iframe);
-      }, 180);
+            setTimeout(() => {
+                const iframe = document.createElement("iframe");
+                iframe.style.display = "none";
+                iframe.src = appUrl;
+                document.body.appendChild(iframe);
 
-      setTimeout(() => {
-        if (hasHidden || !iframe) return;
-        iframe.src = appUrls[2];
-      }, 420);
+                setTimeout(() => {
+                    iframe.remove();
+                    link.remove();
+                }, 1200);
+            }, 150);
+        });
+    }
 
-      cleanupTimer = setTimeout(() => {
-        clearFallback();
-        fallbackToWeb();
-      }, 1400);
-    });
-  }
+    function openCtrip() {
+        guardWechatOpen(() => {
+            const hotelId = "112862059";
+            const h5Url = "https://m.ctrip.com/webapp/hotel/hoteldetail/" + hotelId + ".html";
+            const encodedH5ForApp = btoa(unescape(encodeURIComponent(h5Url)));
+            const appUrl = "ctrip://wireless/h5?url=" + encodedH5ForApp + "&type=2";
+            const start = Date.now();
 
-  function openXHS(){
-    guardWechatOpen(() => {
-      if (generatedText.trim()){
-        navigator.clipboard.writeText(generatedText).catch(()=>{});
-      }
+            const fallbackTimer = setTimeout(() => {
+                if (Date.now() - start < 1800) {
+                    window.location.href = h5Url;
+                }
+            }, 1200);
 
-      const appUrl = "xhsdiscover://post_note?ignore_draft=true";
+            const clearFallback = () => {
+                clearTimeout(fallbackTimer);
+                document.removeEventListener("visibilitychange", onVisibilityChange);
+                window.removeEventListener("pagehide", clearFallback);
+                window.removeEventListener("blur", clearFallback);
+            };
 
-      const link = document.createElement("a");
-      link.href = appUrl;
-      link.style.display = "none";
-      document.body.appendChild(link);
-      link.click();
+            const onVisibilityChange = () => {
+                if (document.hidden) {
+                    clearFallback();
+                }
+            };
 
-      setTimeout(() => {
-        link.remove();
-      }, 800);
-    });
-  }
+            document.addEventListener("visibilitychange", onVisibilityChange);
+            window.addEventListener("pagehide", clearFallback, {once: true});
+            window.addEventListener("blur", clearFallback, {once: true});
 
-  function openMeituan(){
-    guardWechatOpen(() => {
-      const shopId = "564151165";
-      const hotelH5Url = "https://i.meituan.com/awp/h5/hotel/poi/deal.html?poiId=" + shopId;
-      const encodedHotelH5Url = encodeURIComponent(hotelH5Url);
-      const appUrl = "imeituan://www.meituan.com/web?url=" + encodedHotelH5Url;
-
-      const link = document.createElement("a");
-      link.href = appUrl;
-      link.style.display = "none";
-      document.body.appendChild(link);
-      link.click();
-
-      setTimeout(() => {
-        const iframe = document.createElement("iframe");
-        iframe.style.display = "none";
-        iframe.src = appUrl;
-        document.body.appendChild(iframe);
-
-        setTimeout(() => {
-          iframe.remove();
-          link.remove();
-        }, 1200);
-      }, 150);
-    });
-  }
-
-  function openCtrip(){
-    guardWechatOpen(() => {
-      const hotelId = "112862059";
-      const h5Url = "https://m.ctrip.com/webapp/hotel/hoteldetail/" + hotelId + ".html";
-      const encodedH5ForApp = btoa(unescape(encodeURIComponent(h5Url)));
-      const appUrl = "ctrip://wireless/h5?url=" + encodedH5ForApp + "&type=2";
-      const start = Date.now();
-
-      const fallbackTimer = setTimeout(() => {
-        if (Date.now() - start < 1800) {
-          window.location.href = h5Url;
-        }
-      }, 1200);
-
-      const clearFallback = () => {
-        clearTimeout(fallbackTimer);
-        document.removeEventListener("visibilitychange", onVisibilityChange);
-        window.removeEventListener("pagehide", clearFallback);
-        window.removeEventListener("blur", clearFallback);
-      };
-
-      const onVisibilityChange = () => {
-        if (document.hidden) {
-          clearFallback();
-        }
-      };
-
-      document.addEventListener("visibilitychange", onVisibilityChange);
-      window.addEventListener("pagehide", clearFallback, { once: true });
-      window.addEventListener("blur", clearFallback, { once: true });
-
-      window.location.href = appUrl;
-    });
-  }
+            window.location.href = appUrl;
+        });
+    }
 </script>
 <script>
-  updateGenerateUI(false);
+    updateGenerateUI(false);
+    updatePlatformBadges();
 </script>
 </body>
 </html>
