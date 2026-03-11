@@ -1029,6 +1029,10 @@
         return /MicroMessenger/i.test(window.navigator.userAgent || "");
     }
 
+    function shouldShowWechatGuideBeforeGenerate(platform) {
+        return ["xhs", "douyin", "moments", "ctrip", "qunar", "meituan"].includes(platform);
+    }
+
     function showWechatGuide() {
         const mask = document.getElementById("wechatMask");
         if (!mask) return;
@@ -1332,6 +1336,11 @@
     async function handlePlatformClick(platform) {
         if (isGenerating) return;
 
+        if (shouldShowWechatGuideBeforeGenerate(platform) && isWeChatBrowser()) {
+            showWechatGuide();
+            return;
+        }
+
         setSelectedPlatform(platform);
 
         const cachedText = (platformContentMap[platform] || "").trim();
@@ -1426,6 +1435,11 @@
     async function generate() {
         if (isGenerating) return;
 
+        if (shouldShowWechatGuideBeforeGenerate(selectedPlatform) && isWeChatBrowser()) {
+            showWechatGuide();
+            return false;
+        }
+
         const apiKey = "sk-a1c92c976b554fc8b3b7d55776515597";
 
         isGenerating = true;
@@ -1514,6 +1528,11 @@
     }
 
     async function regenerateContent() {
+        if (shouldShowWechatGuideBeforeGenerate(selectedPlatform) && isWeChatBrowser()) {
+            showWechatGuide();
+            return;
+        }
+
         const ok = await generate();
         if (!ok) return;
 
