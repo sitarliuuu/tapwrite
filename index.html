@@ -990,6 +990,7 @@
     let pendingPlatform = "";
     let generatingPlatform = "";
     let toastTimer = null;
+    let pendingAutoCopyText = "";
     const platformContentMap = {
         xhs: "",
         douyin: "",
@@ -1001,27 +1002,38 @@
 
     async function writeClipboardText(text) {
         if (!text || !text.trim()) return false;
+
         try {
-            await navigator.clipboard.writeText(text);
-            return true;
-        } catch (e) {
-            try {
-                const textarea = document.createElement("textarea");
-                textarea.value = text;
-                textarea.setAttribute("readonly", "readonly");
-                textarea.style.position = "fixed";
-                textarea.style.top = "-9999px";
-                textarea.style.opacity = "0";
-                document.body.appendChild(textarea);
-                textarea.focus();
-                textarea.select();
-                textarea.setSelectionRange(0, textarea.value.length);
-                const ok = document.execCommand("copy");
-                textarea.remove();
-                return !!ok;
-            } catch (err) {
-                return false;
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(text);
+                return true;
             }
+        } catch (e) {
+        }
+
+        try {
+            const textarea = document.createElement("textarea");
+            textarea.value = text;
+            textarea.setAttribute("readonly", "readonly");
+            textarea.style.position = "fixed";
+            textarea.style.top = "50%";
+            textarea.style.left = "50%";
+            textarea.style.width = "1px";
+            textarea.style.height = "1px";
+            textarea.style.padding = "0";
+            textarea.style.border = "0";
+            textarea.style.opacity = "0";
+            textarea.style.pointerEvents = "none";
+            textarea.style.transform = "translate(-50%, -50%)";
+            document.body.appendChild(textarea);
+            textarea.focus({preventScroll: true});
+            textarea.select();
+            textarea.setSelectionRange(0, textarea.value.length);
+            const ok = document.execCommand("copy");
+            textarea.remove();
+            return !!ok;
+        } catch (err) {
+            return false;
         }
     }
 
@@ -1319,10 +1331,33 @@
         modal.classList.remove("show");
         modal.setAttribute("aria-hidden", "true");
         document.body.style.overflow = "";
+
+        if (pendingAutoCopyText) {
+            const text = pendingAutoCopyText;
+            pendingAutoCopyText = "";
+            setTimeout(() => {
+                writeClipboardText(text).then(copied => {
+                    if (copied) {
+                        showToast("文案已自动复制");
+                    }
+                });
+            }, 80);
+        }
     }
 
     function confirmPlatformJump() {
         const platform = pendingPlatform || selectedPlatform;
+
+        if (platform === "douyin" && pendingAutoCopyText) {
+            const text = pendingAutoCopyText;
+            pendingAutoCopyText = "";
+            writeClipboardText(text).then(copied => {
+                if (copied) {
+                    showToast("文案已自动复制");
+                }
+            });
+        }
+
         hidePlatformConfirm();
 
         if (platform === "xhs") return openXHS();
@@ -1365,7 +1400,14 @@
 
         const ok = await generate();
         if (ok) {
-            const copied = await writeClipboardText(generatedText);
+            let copied = await writeClipboardText(generatedText);
+
+            if (!copied && platform === "douyin") {
+                pendingAutoCopyText = generatedText;
+            } else {
+                pendingAutoCopyText = "";
+            }
+
             showPlatformConfirm(platform, copied);
         }
     }
