@@ -1045,8 +1045,8 @@
         document.body.style.overflow = "";
     }
 
-    function guardWechatOpen(action) {
-        if (isWeChatBrowser()) {
+    function guardWechatOpen(action, shouldBlockInWechat = true) {
+        if (shouldBlockInWechat && isWeChatBrowser()) {
             showWechatGuide();
             return false;
         }
@@ -1059,7 +1059,7 @@
     function handleRestrictedEntry() {
         return guardWechatOpen(() => {
             showToast("该功能正在开发中");
-        });
+        }, true);
     }
 
     async function copyWifiPassword() {
@@ -1068,20 +1068,18 @@
     }
 
     async function openWifiModal() {
-        return guardWechatOpen(async () => {
-            await copyWifiPassword();
-            const modal = document.getElementById("wifiModal");
-            const badge = document.getElementById("wifiCopyBadge");
-            if (!modal) return;
+        await copyWifiPassword();
+        const modal = document.getElementById("wifiModal");
+        const badge = document.getElementById("wifiCopyBadge");
+        if (!modal) return;
 
-            if (badge) {
-                badge.innerText = "已复制";
-            }
+        if (badge) {
+            badge.innerText = "已复制";
+        }
 
-            modal.classList.add("show");
-            modal.setAttribute("aria-hidden", "false");
-            document.body.style.overflow = "hidden";
-        });
+        modal.classList.add("show");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
     }
 
     function hideWifiModal() {
@@ -1093,13 +1091,11 @@
     }
 
     function openWechatQrModal() {
-        return guardWechatOpen(() => {
-            const modal = document.getElementById("wechatQrModal");
-            if (!modal) return;
-            modal.classList.add("show");
-            modal.setAttribute("aria-hidden", "false");
-            document.body.style.overflow = "hidden";
-        });
+        const modal = document.getElementById("wechatQrModal");
+        if (!modal) return;
+        modal.classList.add("show");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
     }
 
     function openMiniProgram() {
@@ -1292,8 +1288,8 @@
         if (descEl) {
             if (isQunar) {
                 descEl.innerText = copied
-                    ? `已为你生成并复制${label}文案。\n${label}暂不支持自动跳转，请手动打开 App 粘贴发布。`
-                    : `已为你生成${label}文案。\n请先点击下方“复制文案”，再手动打开 ${label} App 粘贴发布。`;
+                    ? `已为你生成并复制${label}文案。\n现在将尝试打开该店铺评论页，若未拉起 App 会自动打开网页。`
+                    : `已为你生成${label}文案。\n请先点击下方“复制文案”，再尝试打开该店铺评论页。`;
             } else if (isMoments) {
                 descEl.innerText = copied
                     ? `已为你生成并复制${label}文案\n现在可以直接前往微信粘贴发布。`
@@ -1305,7 +1301,7 @@
             }
         }
 
-        if (goBtn) goBtn.innerText = isQunar ? "知道了" : (isMoments ? "前往微信" : `前往${label}`);
+        if (goBtn) goBtn.innerText = isQunar ? "前往去哪儿" : (isMoments ? "前往微信" : `前往${label}`);
 
         if (!modal) return;
         modal.classList.add("show");
@@ -1330,10 +1326,7 @@
         if (platform === "moments") return openWechatMoments();
         if (platform === "ctrip") return openCtrip();
         if (platform === "meituan") return openMeituan();
-        if (platform === "qunar") {
-            showToast("去哪儿暂不支持自动跳转，请手动打开 App 发布");
-            return;
-        }
+        if (platform === "qunar") return openQunar();
     }
 
     async function handlePlatformClick(platform) {
@@ -1350,11 +1343,6 @@
             updatePlatformBadges();
 
             const copied = await writeClipboardText(generatedText);
-
-            if (platform === "qunar") {
-                showPlatformConfirm(platform, copied);
-                return;
-            }
 
             if (copied) {
                 showToast(platform === "qunar" ? `${getPlatformLabel(platform)}文案已复制` : `${getPlatformLabel(platform)}文案已复制，正在打开平台`, 1800);
@@ -1536,7 +1524,9 @@
             const isQunar = platform === "qunar";
 
             if (isQunar) {
-                showPlatformConfirm(platform, true);
+                showToast(`${getPlatformLabel(platform)}文案已重新生成并复制，正在打开店铺评论页`);
+                pendingPlatform = platform;
+                confirmPlatformJump();
             } else {
                 showToast(`${getPlatformLabel(platform)}文案已重新生成并复制`);
             }
@@ -1681,6 +1671,81 @@
                     link.remove();
                 }, 1200);
             }, 150);
+        });
+    }
+
+    function openQunar() {
+        guardWechatOpen(() => {
+            if (generatedText.trim()) {
+                writeClipboardText(generatedText);
+            }
+
+            const webUrl = "https://review.qunar.com/hotelcn/hotelcommentlist?seq=lasa_6663&cid=";
+            const appUrls = [
+                "qunartraveliphone://hy?url=" + encodeURIComponent(webUrl),
+                "qunartravelaphone://hy?url=" + encodeURIComponent(webUrl)
+            ];
+
+            const start = Date.now();
+            let hasHidden = false;
+            let cleanupTimer = null;
+            let iframe = null;
+            let link = null;
+
+            const clearFallback = () => {
+                if (cleanupTimer) {
+                    clearTimeout(cleanupTimer);
+                    cleanupTimer = null;
+                }
+                document.removeEventListener("visibilitychange", onVisibilityChange);
+                window.removeEventListener("pagehide", clearFallback);
+                window.removeEventListener("blur", clearFallback);
+                if (iframe) {
+                    iframe.remove();
+                    iframe = null;
+                }
+                if (link) {
+                    link.remove();
+                    link = null;
+                }
+            };
+
+            const onVisibilityChange = () => {
+                if (document.hidden) {
+                    hasHidden = true;
+                    clearFallback();
+                }
+            };
+
+            const fallbackToWeb = () => {
+                if (hasHidden) return;
+                if (Date.now() - start < 2500) {
+                    window.location.href = webUrl;
+                }
+            };
+
+            document.addEventListener("visibilitychange", onVisibilityChange);
+            window.addEventListener("pagehide", clearFallback, {once: true});
+            window.addEventListener("blur", clearFallback, {once: true});
+
+            link = document.createElement("a");
+            link.href = appUrls[0];
+            link.style.display = "none";
+            document.body.appendChild(link);
+            link.click();
+
+            setTimeout(() => {
+                if (hasHidden) return;
+                iframe = document.createElement("iframe");
+                iframe.style.display = "none";
+                iframe.src = appUrls[1];
+                document.body.appendChild(iframe);
+            }, 180);
+
+            cleanupTimer = setTimeout(() => {
+                clearFallback();
+                fallbackToWeb();
+            }, 1400);
         });
     }
 
