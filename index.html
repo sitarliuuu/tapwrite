@@ -960,14 +960,26 @@
 </div>
 <div id="wechatQrModal" class="wifi-modal" aria-hidden="true">
     <div class="wifi-modal-card wechat-qr-card">
-        <h2 class="wifi-modal-title">长按识别二维码添加微信</h2>
-        <p class="wechat-qr-desc">若无法直接识别，可截图后打开微信扫一扫，从相册中选择二维码。</p>
+        <h2 class="wifi-modal-title">长按识别二维码打开小程序</h2>
+        <p class="wechat-qr-desc">若无法直接识别，可截图后打开微信扫一扫，从相册中选择小程序码。</p>
 
         <div class="wechat-qr-box">
             <img class="wechat-qr-image" src="./images/wechat_qr.png" alt="微信二维码"/>
         </div>
 
         <button class="wifi-modal-close" type="button" onclick="hideWechatQrModal()">×</button>
+    </div>
+</div>
+<div id="miniProgramQrModal" class="wifi-modal" aria-hidden="true">
+    <div class="wifi-modal-card wechat-qr-card">
+        <h2 class="wifi-modal-title">长按识别二维码添加微信</h2>
+        <p class="wechat-qr-desc">若无法直接识别，可截图后打开微信扫一扫，从相册中选择二维码。</p>
+
+        <div class="wechat-qr-box">
+            <img class="wechat-qr-image" src="./images/miniProgram_qr.png" alt="小程序二维码"/>
+        </div>
+
+        <button class="wifi-modal-close" type="button" onclick="hideMiniProgramQrModal()">×</button>
     </div>
 </div>
 <div id="toast" class="toast" aria-hidden="true"></div>
@@ -1091,22 +1103,28 @@
     }
 
     function openMiniProgram() {
-        guardWechatOpen(() => {
-            const urlLink = "https://wxaurl.cn/CpKpBx0kXen3B0A";
-            window.location.href = urlLink;
-        });
+        const modal = document.getElementById("miniProgramQrModal");
+        if (!modal) return;
+        modal.classList.add("show");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+    }
+
+    function hideMiniProgramQrModal() {
+        const modal = document.getElementById("miniProgramQrModal");
+        if (!modal) return;
+        modal.classList.remove("show");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
     }
 
     function openWechatMoments() {
-        guardWechatOpen(() => {
+        guardWechatOpen(async () => {
             if (generatedText.trim()) {
-                writeClipboardText(generatedText);
+                await writeClipboardText(generatedText);
             }
 
-            const appUrls = [
-                "weixin://dl/moments",
-                "weixin://dl/timeline"
-            ];
+            const appUrl = "weixin://";
             const start = Date.now();
             let hasHidden = false;
             let cleanupTimer = null;
@@ -1138,10 +1156,10 @@
                 }
             };
 
-            const fallbackToWeChat = () => {
+            const fallbackNotice = () => {
                 if (hasHidden) return;
                 if (Date.now() - start < 2500) {
-                    window.location.href = "weixin://";
+                    showToast("已复制朋友圈文案，请手动进入微信朋友圈粘贴发布", 2600);
                 }
             };
 
@@ -1150,7 +1168,7 @@
             window.addEventListener("blur", clearFallback, {once: true});
 
             link = document.createElement("a");
-            link.href = appUrls[0];
+            link.href = appUrl;
             link.style.display = "none";
             document.body.appendChild(link);
             link.click();
@@ -1159,13 +1177,13 @@
                 if (hasHidden) return;
                 iframe = document.createElement("iframe");
                 iframe.style.display = "none";
-                iframe.src = appUrls[1];
+                iframe.src = appUrl;
                 document.body.appendChild(iframe);
             }, 180);
 
             cleanupTimer = setTimeout(() => {
                 clearFallback();
-                fallbackToWeChat();
+                fallbackNotice();
             }, 1400);
         });
     }
