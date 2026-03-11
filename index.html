@@ -12,7 +12,8 @@
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial;
-            background: #eef3ff;
+            background: #eef3ff url('./images/background.png') no-repeat center top;
+            background-size: cover;
             color: #111;
             padding: 20px 16px 32px;
             text-align: center;
@@ -25,10 +26,25 @@
 
         .hero {
             text-align: center;
-            background: linear-gradient(180deg, #f7f9ff 0%, #edf2ff 100%);
+            background: url('./images/banner.png') no-repeat center;
+            background-size: cover;
             border-radius: 24px;
             padding: 32px 20px 24px;
             margin-bottom: 18px;
+            position: relative;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.72);
+            border-radius: 24px;
+        }
+
+        .hero > * {
+            position: relative;
+            z-index: 1;
         }
 
         .hero h1 {
@@ -173,8 +189,9 @@
             text-align: center;
         }
 
-        /* 避免平台名称过长换行，例如“抖音写评论” */
-        .tile[data-platform="douyin"] h3 {
+        /* 避免平台名称过长换行 */
+        .tile[data-platform="douyin"] h3,
+        .tile.mini-program-tile h3 {
             font-size: 14px;
             white-space: nowrap;
         }
@@ -878,7 +895,7 @@
                 <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="关注抖音"/></div>
                 <h3>关注抖音</h3>
             </div>
-            <div class="tile" onclick="openMiniProgram()">
+            <div class="tile mini-program-tile" onclick="openMiniProgram()">
                 <div class="tile-icon icon-wx"><img src="./images/miniapp.png" alt="一屿藏饰手作"/></div>
                 <h3>一屿藏饰手作</h3>
             </div>
