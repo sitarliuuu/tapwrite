@@ -868,7 +868,7 @@
                 <div class="tile-icon icon-channel"><img src="./images/wx_channel.png" alt="视频号"/></div>
                 <h3>关注视频号</h3>
             </div>
-            <div class="tile" onclick="handleRestrictedEntry()">
+            <div class="tile" onclick="openDouyinProfile()">
                 <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="关注抖音"/></div>
                 <h3>关注抖音</h3>
             </div>
@@ -884,7 +884,7 @@
                 <div class="tile-icon icon-wifi"><img src="./images/wifi.png" alt="连WIFI"/></div>
                 <h3>连WIFI</h3>
             </div>
-            <div class="tile" onclick="showToast('噔噔噔噔~敬请期待🤓')">
+            <div class="tile" onclick="showToast('噔噔噔~敬请期待🤓')">
                 <div class="tile-icon icon-dp"><img src="./images/more.png" alt="更多"/></div>
                 <h3>更多</h3>
             </div>
@@ -1643,6 +1643,89 @@
                 clearFallback();
                 fallbackToWeb();
             }, 1400);
+        });
+    }
+
+    function openDouyinProfile() {
+        guardWechatOpen(() => {
+            const uid = "63180123006";
+            const webUrl = "https://www.douyin.com/user/" + uid;
+            const appUrls = [
+                "snssdk1128://user/profile/" + encodeURIComponent(uid),
+                "snssdk2329://user/profile/" + encodeURIComponent(uid),
+                "aweme://user/profile/" + encodeURIComponent(uid),
+                "snssdk1128://webview?url=" + encodeURIComponent(webUrl)
+            ];
+            const start = Date.now();
+            let hasHidden = false;
+            let cleanupTimer = null;
+            let iframe = null;
+            let link = null;
+
+            const clearFallback = () => {
+                if (cleanupTimer) {
+                    clearTimeout(cleanupTimer);
+                    cleanupTimer = null;
+                }
+                document.removeEventListener("visibilitychange", onVisibilityChange);
+                window.removeEventListener("pagehide", clearFallback);
+                window.removeEventListener("blur", clearFallback);
+                if (iframe) {
+                    iframe.remove();
+                    iframe = null;
+                }
+                if (link) {
+                    link.remove();
+                    link = null;
+                }
+            };
+
+            const onVisibilityChange = () => {
+                if (document.hidden) {
+                    hasHidden = true;
+                    clearFallback();
+                }
+            };
+
+            const fallbackToWeb = () => {
+                if (hasHidden) return;
+                if (Date.now() - start < 2500) {
+                    window.location.href = webUrl;
+                }
+            };
+
+            document.addEventListener("visibilitychange", onVisibilityChange);
+            window.addEventListener("pagehide", clearFallback, {once: true});
+            window.addEventListener("blur", clearFallback, {once: true});
+
+            link = document.createElement("a");
+            link.href = appUrls[0];
+            link.style.display = "none";
+            document.body.appendChild(link);
+            link.click();
+
+            setTimeout(() => {
+                if (hasHidden) return;
+                iframe = document.createElement("iframe");
+                iframe.style.display = "none";
+                iframe.src = appUrls[1];
+                document.body.appendChild(iframe);
+            }, 180);
+
+            setTimeout(() => {
+                if (hasHidden || !iframe) return;
+                iframe.src = appUrls[2];
+            }, 420);
+
+            setTimeout(() => {
+                if (hasHidden || !iframe) return;
+                iframe.src = appUrls[3];
+            }, 680);
+
+            cleanupTimer = setTimeout(() => {
+                clearFallback();
+                fallbackToWeb();
+            }, 1500);
         });
     }
 
