@@ -173,6 +173,12 @@
             text-align: center;
         }
 
+        /* 避免平台名称过长换行，例如“抖音写评论” */
+        .tile[data-platform="douyin"] h3 {
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
         .tile p {
             margin: 8px 0 0;
             font-size: 12px;
@@ -873,8 +879,8 @@
                 <h3>关注抖音</h3>
             </div>
             <div class="tile" onclick="openMiniProgram()">
-                <div class="tile-icon icon-wx"><img src="./images/miniapp.png" alt="小程序"/></div>
-                <h3>小程序</h3>
+                <div class="tile-icon icon-wx"><img src="./images/miniapp.png" alt="一屿藏饰手作"/></div>
+                <h3>一屿藏饰手作</h3>
             </div>
             <div class="tile" onclick="openWechatQrModal()">
                 <div class="tile-icon icon-wx"><img src="./images/wechat.png" alt="加微信"/></div>
@@ -1698,7 +1704,7 @@
 
     function openDouyinProfile() {
         guardWechatOpen(() => {
-            const uid = "63180123006";
+            const uid = "62732453423";
             const webUrl = "https://www.douyin.com/user/" + uid;
             const appUrls = [
                 "snssdk1128://user/profile/" + encodeURIComponent(uid),
