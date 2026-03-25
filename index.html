@@ -1026,6 +1026,7 @@
     };
     // 控制AI生成开关
     const ENABLE_AI = false;
+    const MOCK_GENERATED_TEXT = "这次入住体验很好，位置方便，房间干净舒服，整体氛围也很放松，服务贴心，来这边玩的话会愿意推荐给朋友。";
 
     async function writeClipboardText(text) {
         if (!text || !text.trim()) return false;
@@ -1503,8 +1504,13 @@
 
     async function generate() {
         if (!ENABLE_AI) {
-            showToast("测试阶段暂时关闭文案生成功能", 2600);
-            return false;
+            generatedText = MOCK_GENERATED_TEXT;
+            platformContentMap[selectedPlatform] = MOCK_GENERATED_TEXT;
+            setStatus(generatedText);
+            document.getElementById("btnCopy").classList.add("show");
+            updateGenerateUI(true);
+            updatePlatformBadges();
+            return true;
         }
 
         if (isGenerating) return;
@@ -1602,8 +1608,12 @@
 
     async function regenerateContent() {
         if (!ENABLE_AI) {
-            showToast("测试阶段暂时关闭文案生成功能", 2600);
-            return;
+            generatedText = MOCK_GENERATED_TEXT;
+            platformContentMap[selectedPlatform] = MOCK_GENERATED_TEXT;
+            setStatus(generatedText);
+            document.getElementById("btnCopy").classList.add("show");
+            updateGenerateUI(true);
+            updatePlatformBadges();
         }
 
         const ok = await generate();
