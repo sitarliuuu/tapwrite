@@ -14,5 +14,20 @@
   "social": {
     "wechat_qr": "./images/wechat_qr.png",
     "mini_program_qr": "./images/miniProgram_qr.png"
+  },
+  "platforms": {
+    "douyin": {
+      "poi_id": "7279650606363445289",
+      "profile_uid": "62732453423"
+    },
+    "meituan": {
+      "poi_id": "564151165"
+    },
+    "qunar": {
+      "seq": "lasa_6663"
+    },
+    "ctrip": {
+      "hotel_id": "112862059"
+    }
   }
 }

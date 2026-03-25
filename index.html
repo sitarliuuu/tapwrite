@@ -1024,6 +1024,8 @@
         qunar: "",
         meituan: ""
     };
+    // 控制AI生成开关
+    const ENABLE_AI = false;
 
     async function writeClipboardText(text) {
         if (!text || !text.trim()) return false;
@@ -1500,6 +1502,11 @@
     }
 
     async function generate() {
+        if (!ENABLE_AI) {
+            showToast("测试阶段暂时关闭文案生成功能", 2600);
+            return false;
+        }
+
         if (isGenerating) return;
 
         if (shouldShowWechatGuideBeforeGenerate(selectedPlatform) && isWeChatBrowser()) {
@@ -1546,8 +1553,7 @@
                 let bodyText = "";
                 try {
                     bodyText = await res.text();
-                } catch (e) {
-                }
+                } catch (e) {}
                 setStatus(`请求失败：HTTP ${res.status} ${res.statusText}\n\n${bodyText}`);
                 if (!generatedText.trim()) {
                     updateGenerateUI(false);
@@ -1595,8 +1601,8 @@
     }
 
     async function regenerateContent() {
-        if (shouldShowWechatGuideBeforeGenerate(selectedPlatform) && isWeChatBrowser()) {
-            showWechatGuide();
+        if (!ENABLE_AI) {
+            showToast("测试阶段暂时关闭文案生成功能", 2600);
             return;
         }
 
@@ -1647,7 +1653,11 @@
     function openDouyin() {
         guardWechatOpen(() => {
             const douyinStoreWebUrl = "https://life-share.scsjsd.com/falcon/poi_mwa/poi_detail?poi_id=7279650606363445289&app=aweme&biz_code=trip";
-            const poiId = "7279650606363445289";
+            const poiId = getPlatformConfig("douyin").poi_id || "";
+            if (!poiId) {
+                showToast("未配置抖音门店");
+                return;
+            }
             const appUrls = [
                 "snssdk1128://poi/detail?id=" + encodeURIComponent(poiId),
                 "snssdk1128://poi/detail?poi_id=" + encodeURIComponent(poiId),
@@ -1723,7 +1733,11 @@
 
     function openDouyinProfile() {
         guardWechatOpen(() => {
-            const uid = "62732453423";
+            const uid = getPlatformConfig("douyin").profile_uid || "";
+            if (!uid) {
+                showToast("未配置抖音主页");
+                return;
+            }
             const webUrl = "https://www.douyin.com/user/" + uid;
             const appUrls = [
                 "snssdk1128://user/profile/" + encodeURIComponent(uid),
@@ -1826,7 +1840,11 @@
 
     function openMeituan() {
         guardWechatOpen(() => {
-            const shopId = "564151165";
+            const shopId = getPlatformConfig("meituan").poi_id || "";
+            if (!shopId) {
+                showToast("未配置美团门店");
+                return;
+            }
             const hotelH5Url = "https://i.meituan.com/awp/h5/hotel/poi/deal.html?poiId=" + shopId;
             const encodedHotelH5Url = encodeURIComponent(hotelH5Url);
             const appUrl = "imeituan://www.meituan.com/web?url=" + encodedHotelH5Url;
@@ -1857,7 +1875,12 @@
                 writeClipboardText(generatedText);
             }
 
-            const webUrl = "https://review.qunar.com/hotelcn/hotelcommentlist?seq=lasa_6663&cid=";
+            const seq = getPlatformConfig("qunar").seq || "";
+            if (!seq) {
+                showToast("未配置去哪儿门店");
+                return;
+            }
+            const webUrl = "https://review.qunar.com/hotelcn/hotelcommentlist?seq=" + encodeURIComponent(seq) + "&cid=";
             const appUrls = [
                 "qunartraveliphone://hy?url=" + encodeURIComponent(webUrl),
                 "qunartravelaphone://hy?url=" + encodeURIComponent(webUrl)
@@ -1928,7 +1951,11 @@
 
     function openCtrip() {
         guardWechatOpen(() => {
-            const hotelId = "112862059";
+            const hotelId = getPlatformConfig("ctrip").hotel_id || "";
+            if (!hotelId) {
+                showToast("未配置携程酒店");
+                return;
+            }
             const h5Url = "https://m.ctrip.com/webapp/hotel/hoteldetail/" + hotelId + ".html";
             const encodedH5ForApp = btoa(unescape(encodeURIComponent(h5Url)));
             const appUrl = "ctrip://wireless/h5?url=" + encodedH5ForApp + "&type=2";
@@ -2007,6 +2034,10 @@
         if (miniProgramQrImg && social.mini_program_qr) {
             miniProgramQrImg.src = social.mini_program_qr;
         }
+    }
+
+    function getPlatformConfig(platform) {
+        return merchantConfig?.platforms?.[platform] || {};
     }
 
     async function initApp() {
