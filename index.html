@@ -833,12 +833,7 @@
         <p class="panel-desc">
             很高兴与你相遇，愿你在这里住得舒服、玩得开心。下方为你准备了入住期间常用的快捷服务，点击即可使用。</p>
 
-        <div class="hint">
-            <div>✨ 点击下方平台，即可自动生成对应平台文案：</div>
-            <div>1) 点击小红书 / 抖音 / 携程 / 美团 / 去哪儿，可自动生成适配点评或分享文案</div>
-            <div>2) 生成完成后，可重新生成或一键复制使用</div>
-            <div>3) WIFI、微信、小程序等功能也可以直接点击使用</div>
-        </div>
+        <div class="hint" id="hintBlock"></div>
 
         <div id="result"></div>
 
@@ -1007,6 +1002,7 @@
 </div>
 <div id="toast" class="toast" aria-hidden="true"></div>
 <script>
+    // 运行时状态：当前生成文案、选中平台、商户配置、提示状态等
     let generatedText = "";
     let isGenerating = false;
     let selectedPlatform = "xhs";
@@ -1016,6 +1012,7 @@
     let pendingAutoCopyText = "";
     let merchantConfig = null;
     let currentMerchantSlug = "ymdq";
+    // 各平台当前已生成/缓存的文案内容
     const platformContentMap = {
         xhs: "",
         douyin: "",
@@ -1024,10 +1021,12 @@
         qunar: "",
         meituan: ""
     };
-    // 控制AI生成开关
+    // AI 开关：测试阶段可关闭真实生成，避免消耗 token
     const ENABLE_AI = false;
+    // AI 关闭时使用的固定测试文案
     const MOCK_GENERATED_TEXT = "这次入住体验很好，位置方便，房间干净舒服，整体氛围也很放松，服务贴心，来这边玩的话会愿意推荐给朋友。";
 
+    // 统一复制文本到剪贴板，优先使用 Clipboard API，失败时降级到 textarea 方案
     async function writeClipboardText(text) {
         if (!text || !text.trim()) return false;
 
@@ -1065,14 +1064,17 @@
         }
     }
 
+    // 判断当前是否处于微信内置浏览器
     function isWeChatBrowser() {
         return /MicroMessenger/i.test(window.navigator.userAgent || "");
     }
 
+    // 判断某个平台操作前是否需要先展示“请在浏览器打开”的微信提示
     function shouldShowWechatGuideBeforeGenerate(platform) {
         return ["xhs", "douyin", "moments", "ctrip", "qunar", "meituan"].includes(platform);
     }
 
+    // 显示微信内打开限制的引导蒙层
     function showWechatGuide() {
         const mask = document.getElementById("wechatMask");
         if (!mask) return;
@@ -1081,6 +1083,7 @@
         document.body.style.overflow = "hidden";
     }
 
+    // 关闭微信引导蒙层
     function hideWechatGuide() {
         const mask = document.getElementById("wechatMask");
         if (!mask) return;
@@ -1089,6 +1092,7 @@
         document.body.style.overflow = "";
     }
 
+    // 统一处理“微信内是否允许继续执行动作”的守卫逻辑
     function guardWechatOpen(action, shouldBlockInWechat = true) {
         if (shouldBlockInWechat && isWeChatBrowser()) {
             showWechatGuide();
@@ -1100,17 +1104,20 @@
         return true;
     }
 
+    // 处理暂未开放的入口点击
     function handleRestrictedEntry() {
         return guardWechatOpen(() => {
             showToast("该功能正在开发中");
         }, true);
     }
 
+    // 复制当前商户配置中的 WiFi 密码
     async function copyWifiPassword() {
         const password = merchantConfig?.wifi?.password || "";
         return await writeClipboardText(password);
     }
 
+    // 打开 WiFi 弹窗，并在打开前自动复制密码
     async function openWifiModal() {
         await copyWifiPassword();
         const modal = document.getElementById("wifiModal");
@@ -1126,6 +1133,7 @@
         document.body.style.overflow = "hidden";
     }
 
+    // 关闭 WiFi 弹窗
     function hideWifiModal() {
         const modal = document.getElementById("wifiModal");
         if (!modal) return;
@@ -1134,6 +1142,7 @@
         document.body.style.overflow = "";
     }
 
+    // 打开微信二维码弹窗
     function openWechatQrModal() {
         const modal = document.getElementById("wechatQrModal");
         if (!modal) return;
@@ -1142,6 +1151,7 @@
         document.body.style.overflow = "hidden";
     }
 
+    // 打开小程序码弹窗
     function openMiniProgram() {
         const modal = document.getElementById("miniProgramQrModal");
         if (!modal) return;
@@ -1150,6 +1160,7 @@
         document.body.style.overflow = "hidden";
     }
 
+    // 关闭小程序码弹窗
     function hideMiniProgramQrModal() {
         const modal = document.getElementById("miniProgramQrModal");
         if (!modal) return;
@@ -1158,6 +1169,7 @@
         document.body.style.overflow = "";
     }
 
+    // 尝试拉起微信，并在需要时先复制朋友圈文案
     function openWechatMoments() {
         guardWechatOpen(async () => {
             if (generatedText.trim()) {
@@ -1228,6 +1240,7 @@
         });
     }
 
+    // 关闭微信二维码弹窗
     function hideWechatQrModal() {
         const modal = document.getElementById("wechatQrModal");
         if (!modal) return;
@@ -1236,6 +1249,7 @@
         document.body.style.overflow = "";
     }
 
+    // 更新页面中的结果展示区域
     function setStatus(text) {
         const resultEl = document.getElementById("result");
         if (!resultEl) return;
@@ -1243,6 +1257,7 @@
         resultEl.innerText = text;
     }
 
+    // 根据是否已有结果，控制结果区和操作按钮的显示状态
     function updateGenerateUI(hasResult) {
         const actions = document.getElementById("resultActions");
         const resultEl = document.getElementById("result");
@@ -1255,10 +1270,12 @@
         }
     }
 
+    // 设置当前选中的目标平台
     function setSelectedPlatform(platform) {
         selectedPlatform = platform;
     }
 
+    // 显示底部轻提示
     function showToast(message, duration = 2200) {
         const toast = document.getElementById("toast");
         if (!toast) return;
@@ -1272,6 +1289,7 @@
         }, duration);
     }
 
+    // 根据生成状态、缓存状态，更新各平台卡片的提示文案和样式
     function updatePlatformBadges() {
         const tiles = document.querySelectorAll('.tile[data-platform]');
         tiles.forEach(tile => {
@@ -1312,6 +1330,7 @@
         });
     }
 
+    // 展示“文案已生成/已复制，是否前往平台”的确认弹窗
     function showPlatformConfirm(platform, copied = false) {
         const modal = document.getElementById("platformConfirmModal");
         const titleEl = document.getElementById("platformConfirmTitle");
@@ -1353,6 +1372,7 @@
         document.body.style.overflow = "hidden";
     }
 
+    // 关闭平台确认弹窗，并处理待补做的自动复制
     function hidePlatformConfirm() {
         const modal = document.getElementById("platformConfirmModal");
         if (!modal) return;
@@ -1373,6 +1393,7 @@
         }
     }
 
+    // 根据当前待前往的平台，执行实际跳转逻辑
     function confirmPlatformJump() {
         const platform = pendingPlatform || selectedPlatform;
 
@@ -1396,6 +1417,7 @@
         if (platform === "qunar") return openQunar();
     }
 
+    // 处理平台入口点击：优先复用缓存文案，否则触发生成
     async function handlePlatformClick(platform) {
         if (isGenerating) return;
 
@@ -1440,6 +1462,7 @@
         }
     }
 
+    // 平台标识转可读中文名称
     function getPlatformLabel(platform) {
         const map = {
             xhs: "小红书",
@@ -1452,6 +1475,7 @@
         return map[platform] || "当前平台";
     }
 
+    // 按平台从商户配置中读取对应 prompt
     function buildPromptByPlatform(platform) {
         const prompts = merchantConfig?.prompts || {};
 
@@ -1466,6 +1490,7 @@
         return prompts.default || "";
     }
 
+    // 生成文案：测试时返回固定文案，正式开启后调用 AI 接口
     async function generate() {
         if (!ENABLE_AI) {
             generatedText = MOCK_GENERATED_TEXT;
@@ -1570,6 +1595,7 @@
         }
     }
 
+    // 重新生成当前平台文案，并在成功后尝试复制
     async function regenerateContent() {
         if (!ENABLE_AI) {
             generatedText = MOCK_GENERATED_TEXT;
@@ -1610,6 +1636,7 @@
     }
 
 
+    // 复制当前结果区中的文案内容
     async function copyText() {
         if (!generatedText.trim()) {
             showToast("还没有可复制的文案，请先选择平台生成");
@@ -1624,6 +1651,7 @@
         }
     }
 
+    // 打开抖音门店页，优先拉起 App，失败时回退到网页
     function openDouyin() {
         guardWechatOpen(() => {
             const douyinStoreWebUrl = "https://life-share.scsjsd.com/falcon/poi_mwa/poi_detail?poi_id=7279650606363445289&app=aweme&biz_code=trip";
@@ -1705,6 +1733,7 @@
         });
     }
 
+    // 打开抖音主页，优先拉起 App，失败时回退到网页
     function openDouyinProfile() {
         guardWechatOpen(() => {
             const uid = getPlatformConfig("douyin").profile_uid || "";
@@ -1792,6 +1821,7 @@
         });
     }
 
+    // 打开小红书发笔记页，并尽量提前复制内容
     function openXHS() {
         guardWechatOpen(() => {
             if (generatedText.trim()) {
@@ -1812,6 +1842,7 @@
         });
     }
 
+    // 打开美团门店页面
     function openMeituan() {
         guardWechatOpen(() => {
             const shopId = getPlatformConfig("meituan").poi_id || "";
@@ -1843,6 +1874,7 @@
         });
     }
 
+    // 打开去哪儿评论页，优先拉起 App，失败时回退到网页
     function openQunar() {
         guardWechatOpen(() => {
             if (generatedText.trim()) {
@@ -1923,6 +1955,7 @@
         });
     }
 
+    // 打开携程酒店详情页，优先拉起 App，失败时回退到 H5
     function openCtrip() {
         guardWechatOpen(() => {
             const hotelId = getPlatformConfig("ctrip").hotel_id || "";
@@ -1962,6 +1995,7 @@
         });
     }
 
+    // 根据商户 slug 加载对应 JSON 配置
     async function loadMerchantConfig(slug) {
         try {
             const res = await fetch(`./data/merchants/${slug}.json`);
@@ -1986,6 +2020,7 @@
         }
     }
 
+    // 将商户配置应用到页面：标题、文案、二维码、WiFi、功能开关等
     function applyMerchantConfig() {
         if (!merchantConfig) return;
 
@@ -2012,6 +2047,12 @@
         const panelDesc = document.querySelector(".panel-desc");
         if (panelDesc) {
             panelDesc.innerText = merchant.welcome_desc || "";
+        }
+
+        const hintBlock = document.getElementById("hintBlock");
+        const hints = merchantConfig?.ui?.hints || [];
+        if (hintBlock) {
+            hintBlock.innerHTML = hints.map(text => `<div>${text}</div>`).join("");
         }
 
         const wifiRows = document.querySelectorAll("#wifiModal .wifi-info-text");
@@ -2044,10 +2085,12 @@
 });
     }
 
+    // 读取某个平台在当前商户下的配置参数
     function getPlatformConfig(platform) {
         return merchantConfig?.platforms?.[platform] || {};
     }
 
+    // 页面初始化：从 URL 读取商户参数，加载配置并刷新 UI
     async function initApp() {
         console.log("当前商户：", currentMerchantSlug);
         try {
