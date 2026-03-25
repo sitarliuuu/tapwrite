@@ -852,62 +852,62 @@
 
     <section class="panel">
         <div class="grid">
-            <div class="tile" data-platform="xhs" onclick="handlePlatformClick('xhs')">
+            <div class="tile" data-platform="xhs" data-feature="xhs" onclick="handlePlatformClick('xhs')">
                 <div class="tile-icon icon-xhs"><img src="./images/xhs.png" alt="小红书"/></div>
                 <h3>小红书</h3>
                 <p class="tile-hint">生成分享文案</p>
             </div>
 
-            <div class="tile" data-platform="douyin" onclick="handlePlatformClick('douyin')">
+            <div class="tile" data-platform="douyin" data-feature="douyin" onclick="handlePlatformClick('douyin')">
                 <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="抖音写评论"/></div>
                 <h3>抖音写评论</h3>
                 <p class="tile-hint">生成评论内容</p>
             </div>
-            <div class="tile" data-platform="moments" onclick="handlePlatformClick('moments')">
+            <div class="tile" data-platform="moments" data-feature="moments" onclick="handlePlatformClick('moments')">
                 <div class="tile-icon icon-wx"><img src="./images/moments.png" alt="发朋友圈"/></div>
                 <h3>发朋友圈</h3>
                 <p class="tile-hint">生成朋友圈文案</p>
             </div>
 
-            <div class="tile" data-platform="ctrip" onclick="handlePlatformClick('ctrip')">
+            <div class="tile" data-platform="ctrip" data-feature="ctrip" onclick="handlePlatformClick('ctrip')">
                 <div class="tile-icon icon-ctrip"><img src="./images/ctrip.png" alt="携程"/></div>
                 <h3>携程</h3>
                 <p class="tile-hint">生成点评内容</p>
             </div>
 
-            <div class="tile" data-platform="qunar" onclick="handlePlatformClick('qunar')">
+            <div class="tile" data-platform="qunar" data-feature="qunar" onclick="handlePlatformClick('qunar')">
                 <div class="tile-icon icon-qunar"><img src="./images/qunar.png" alt="去哪儿"/></div>
                 <h3>去哪儿</h3>
                 <p class="tile-hint">生成点评内容</p>
             </div>
 
-            <div class="tile" data-platform="meituan" onclick="handlePlatformClick('meituan')">
+            <div class="tile" data-platform="meituan" data-feature="meituan" onclick="handlePlatformClick('meituan')">
                 <div class="tile-icon icon-mt"><img src="./images/meituan.png" alt="美团"/></div>
                 <h3>美团</h3>
                 <p class="tile-hint">生成评价内容</p>
             </div>
 
-            <div class="tile" onclick="handleRestrictedEntry()">
+            <div class="tile" data-feature="video_channel" onclick="handleRestrictedEntry()">
                 <div class="tile-icon icon-channel"><img src="./images/wx_channel.png" alt="视频号"/></div>
                 <h3>关注视频号</h3>
             </div>
-            <div class="tile" onclick="openDouyinProfile()">
+            <div class="tile" data-feature="douyin_profile" onclick="openDouyinProfile()">
                 <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="关注抖音"/></div>
                 <h3>关注抖音</h3>
             </div>
-            <div class="tile mini-program-tile" onclick="openMiniProgram()">
+            <div class="tile mini-program-tile" data-feature="mini_program" onclick="openMiniProgram()">
                 <div class="tile-icon icon-wx"><img src="./images/miniapp.png" alt="一屿藏饰手作"/></div>
                 <h3>一屿藏饰手作</h3>
             </div>
-            <div class="tile" onclick="openWechatQrModal()">
+            <div class="tile" data-feature="wechat_qr" onclick="openWechatQrModal()">
                 <div class="tile-icon icon-wx"><img src="./images/wechat.png" alt="加微信"/></div>
                 <h3>加微信</h3>
             </div>
-            <div class="tile" onclick="openWifiModal()">
+            <div class="tile" data-feature="wifi" onclick="openWifiModal()">
                 <div class="tile-icon icon-wifi"><img src="./images/wifi.png" alt="连WIFI"/></div>
                 <h3>连WIFI</h3>
             </div>
-            <div class="tile" onclick="showToast('噔噔噔噔~敬请期待🤓')">
+            <div class="tile" data-feature="more" onclick="showToast('噔噔噔噔~敬请期待🤓')">
                 <div class="tile-icon icon-dp"><img src="./images/more.png" alt="更多"/></div>
                 <h3>更多</h3>
             </div>
@@ -1990,6 +1990,15 @@
         if (!merchantConfig) return;
 
         const merchant = merchantConfig.merchant || {};
+        if (merchant.enabled === false) {
+            document.body.innerHTML = `
+                <div style="text-align:center;margin-top:60px;">
+                    <h2>商户已停用</h2>
+                    <p style="color:#888;">当前页面暂不可访问</p>
+                </div>
+            `;
+            return;
+        }
         const wifi = merchantConfig.wifi || {};
         const social = merchantConfig.social || {};
 
@@ -2022,6 +2031,17 @@
         if (miniProgramQrImg && social.mini_program_qr) {
             miniProgramQrImg.src = social.mini_program_qr;
         }
+        const features = merchantConfig.features || {};
+        const featureTiles = document.querySelectorAll("[data-feature]");
+
+        featureTiles.forEach(tile => {
+            const key = tile.getAttribute("data-feature");
+            if (features[key] === false) {
+                tile.style.display = "none";
+            } else {
+                tile.style.display = "";
+            }
+});
     }
 
     function getPlatformConfig(platform) {
