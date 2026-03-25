@@ -1,4 +1,6 @@
 {
-  "name": "测试商户2",
-  "enabled": false
+  "merchant": {
+    "name": "测试商户2",
+    "enabled": false
+  }
 }
