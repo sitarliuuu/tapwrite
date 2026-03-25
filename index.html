@@ -1989,8 +1989,8 @@
     function applyMerchantConfig() {
         if (!merchantConfig) return;
 
-        const merchant = merchantConfig.merchant || {};
-        if (merchant.enabled === false) {
+        const merchant = merchantConfig?.merchant;
+        if (!merchant || merchant.enabled === false) {
             document.body.innerHTML = `
                 <div style="text-align:center;margin-top:60px;">
                     <h2>商户已停用</h2>
