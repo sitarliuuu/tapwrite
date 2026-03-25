@@ -1,0 +1,18 @@
+{
+  "merchant": {
+    "slug": "ymdq",
+    "name": "游牧地球民宿",
+    "city": "拉萨",
+    "page_title": "游牧地球民宿入住快捷助手",
+    "welcome_title": "欢迎入住游牧地球民宿",
+    "welcome_desc": "很高兴与你相遇，愿你在这里住得舒服、玩得开心。下方为你准备了入住期间常用的快捷服务，点击即可使用。"
+  },
+  "wifi": {
+    "ssid": "游牧地球民宿",
+    "password": "ymdq888888"
+  },
+  "social": {
+    "wechat_qr": "./images/wechat_qr.png",
+    "mini_program_qr": "./images/miniProgram_qr.png"
+  }
+}
