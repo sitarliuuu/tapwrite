@@ -1014,6 +1014,8 @@
     let generatingPlatform = "";
     let toastTimer = null;
     let pendingAutoCopyText = "";
+    let merchantConfig = null;
+    let currentMerchantSlug = "ymdq";
     const platformContentMap = {
         xhs: "",
         douyin: "",
@@ -1102,7 +1104,7 @@
     }
 
     async function copyWifiPassword() {
-        const password = "ymdq888888";
+        const password = merchantConfig?.wifi?.password || "";
         return await writeClipboardText(password);
     }
 
@@ -1958,9 +1960,69 @@
             window.location.href = appUrl;
         });
     }
+
+    async function loadMerchantConfig(slug = "ymdq") {
+        const res = await fetch(`./data/merchants/${slug}.json`);
+        if (!res.ok) {
+            throw new Error(`加载商户配置失败: ${res.status}`);
+        }
+        merchantConfig = await res.json();
+        currentMerchantSlug = slug;
+        applyMerchantConfig();
+    }
+
+    function applyMerchantConfig() {
+        if (!merchantConfig) return;
+
+        const merchant = merchantConfig.merchant || {};
+        const wifi = merchantConfig.wifi || {};
+        const social = merchantConfig.social || {};
+
+        document.title = merchant.page_title || document.title;
+
+        const panelTitle = document.querySelector(".panel-title");
+        if (panelTitle) {
+            panelTitle.innerText = merchant.welcome_title || "";
+        }
+
+        const panelDesc = document.querySelector(".panel-desc");
+        if (panelDesc) {
+            panelDesc.innerText = merchant.welcome_desc || "";
+        }
+
+        const wifiRows = document.querySelectorAll("#wifiModal .wifi-info-text");
+        if (wifiRows[0]) {
+            wifiRows[0].innerText = wifi.ssid || "";
+        }
+        if (wifiRows[1]) {
+            wifiRows[1].innerText = wifi.password || "";
+        }
+
+        const wechatQrImg = document.querySelector("#wechatQrModal .wechat-qr-image");
+        if (wechatQrImg && social.wechat_qr) {
+            wechatQrImg.src = social.wechat_qr;
+        }
+
+        const miniProgramQrImg = document.querySelector("#miniProgramQrModal .wechat-qr-image");
+        if (miniProgramQrImg && social.mini_program_qr) {
+            miniProgramQrImg.src = social.mini_program_qr;
+        }
+    }
+
+    async function initApp() {
+        try {
+            await loadMerchantConfig("ymdq");
+        } catch (e) {
+            console.error(e);
+            showToast("商户配置加载失败", 3000);
+        }
+
+        updateGenerateUI(false);
+        updatePlatformBadges();
+    }
 </script>
 <script>
-    updateGenerateUI(false);
+    initApp();
     updatePlatformBadges();
 </script>
 </body>
