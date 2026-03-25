@@ -2011,7 +2011,13 @@
 
     async function initApp() {
         try {
-            await loadMerchantConfig("ymdq");
+            const params = new URLSearchParams(window.location.search);
+            const slug = params.get("m");
+            if (!slug) {
+                document.body.innerHTML = "<h2 style='text-align:center;margin-top:40px;'>缺少商户参数</h2>";
+                return;
+            }
+            await loadMerchantConfig(slug);
         } catch (e) {
             console.error(e);
             showToast("商户配置加载失败", 3000);
