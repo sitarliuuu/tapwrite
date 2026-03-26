@@ -2,6 +2,9 @@
   "merchant": {
     "enabled": true,
     "slug": "ymdq",
+    "quota": {
+      "daily": 2
+    },
     "name": "游牧地球民宿",
     "city": "拉萨",
     "page_title": "游牧地球民宿入住快捷助手",
