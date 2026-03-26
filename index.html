@@ -1520,8 +1520,6 @@
         const platformLabel = getPlatformLabel(selectedPlatform);
         setStatus(`正在生成中...\n正在为${platformLabel}生成适配文案\n`);
 
-        const prompt = buildPromptByPlatform(selectedPlatform);
-
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 20000);
 
@@ -1533,8 +1531,7 @@
                 },
                 body: JSON.stringify({
                     merchantSlug: currentMerchantSlug,
-                    platform: selectedPlatform,
-                    prompt
+                    platform: selectedPlatform
                 }),
                 signal: controller.signal
             });
