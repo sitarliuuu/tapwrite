@@ -1475,21 +1475,6 @@
         return map[platform] || "当前平台";
     }
 
-    // 按平台从商户配置中读取对应 prompt
-    function buildPromptByPlatform(platform) {
-        const prompts = merchantConfig?.prompts || {};
-
-        if (platform === "xhs") {
-            return prompts.xhs || "";
-        }
-
-        if (platform === "moments") {
-            return prompts.moments || "";
-        }
-
-        return prompts.default || "";
-    }
-
     // 生成文案：测试时返回固定文案，正式开启后调用 AI 接口
     async function generate() {
         if (!ENABLE_AI) {
