@@ -1022,7 +1022,7 @@
         meituan: ""
     };
     // AI 开关：测试阶段可关闭真实生成，避免消耗 token
-    const ENABLE_AI = false;
+    const ENABLE_AI = true;
     // AI 关闭时使用的固定测试文案
     const MOCK_GENERATED_TEXT = "这次入住体验很好，位置方便，房间干净舒服，整体氛围也很放松，服务贴心，来这边玩的话会愿意推荐给朋友。";
 
@@ -2083,7 +2083,9 @@
 
     // 读取某个平台在当前商户下的配置参数
     function getPlatformConfig(platform) {
-        return merchant?.platforms?.[platform] || {};
+        return merchantConfig?.platforms?.[platform]
+            || merchantConfig?.merchant?.platforms?.[platform]
+            || {};
     }
 
     // 页面初始化：从 URL 读取商户参数，加载配置并刷新 UI
