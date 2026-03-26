@@ -1113,7 +1113,7 @@ updatePlatformBadges();
   <div class="page">
 
     <section class="panel">
-      <div class="panel-kicker">入住快捷助手vue版</div>
+      <div class="panel-kicker">入住快捷助手vue vite版</div>
       <h3 class="panel-title">欢迎入住游牧地球民宿</h3>
       <p class="panel-desc">
         很高兴与你相遇，愿你在这里住得舒服、玩得开心。下方为你准备了入住期间常用的快捷服务，点击即可使用。</p>
