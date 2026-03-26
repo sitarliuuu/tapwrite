@@ -2050,7 +2050,7 @@
         }
 
         const hintBlock = document.getElementById("hintBlock");
-        const hints = merchantConfig?.ui?.hints || [];
+        const hints = merchant?.ui?.hints || merchantConfig?.ui?.hints || [];
         if (hintBlock) {
             hintBlock.innerHTML = hints.map(text => `<div>${text}</div>`).join("");
         }
