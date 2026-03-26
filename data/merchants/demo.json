@@ -2,7 +2,7 @@
   "merchant": {
     "slug": "demo",
     "name": "测试商户",
-    "enabled": true
+    "enabled": false,
   },
   "prompts": {
     "xhs": "一个适合小红书的网红餐厅点评",
