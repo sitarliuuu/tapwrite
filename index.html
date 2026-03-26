@@ -12,7 +12,7 @@
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial;
-            background: #eef3ff url('./images/background.png') no-repeat center top;
+            background: #eef3ff url('frontend/public/images/background.png') no-repeat center top;
             background-size: cover;
             color: #111;
             padding: 20px 16px 32px;
@@ -26,7 +26,7 @@
 
         .hero {
             text-align: center;
-            background: url('./images/banner.png') no-repeat center;
+            background: url('frontend/public/images/banner.png') no-repeat center;
             background-size: cover;
             border-radius: 24px;
             padding: 32px 20px 24px;
@@ -848,62 +848,62 @@
     <section class="panel">
         <div class="grid">
             <div class="tile" data-platform="xhs" data-feature="xhs" onclick="handlePlatformClick('xhs')">
-                <div class="tile-icon icon-xhs"><img src="./images/xhs.png" alt="小红书"/></div>
+                <div class="tile-icon icon-xhs"><img src="frontend/public/images/xhs.png" alt="小红书"/></div>
                 <h3>小红书</h3>
                 <p class="tile-hint">生成分享文案</p>
             </div>
 
             <div class="tile" data-platform="douyin" data-feature="douyin" onclick="handlePlatformClick('douyin')">
-                <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="抖音写评论"/></div>
+                <div class="tile-icon icon-dy"><img src="frontend/public/images/douyin.png" alt="抖音写评论"/></div>
                 <h3>抖音写评论</h3>
                 <p class="tile-hint">生成评论内容</p>
             </div>
             <div class="tile" data-platform="moments" data-feature="moments" onclick="handlePlatformClick('moments')">
-                <div class="tile-icon icon-wx"><img src="./images/moments.png" alt="发朋友圈"/></div>
+                <div class="tile-icon icon-wx"><img src="frontend/public/images/moments.png" alt="发朋友圈"/></div>
                 <h3>发朋友圈</h3>
                 <p class="tile-hint">生成朋友圈文案</p>
             </div>
 
             <div class="tile" data-platform="ctrip" data-feature="ctrip" onclick="handlePlatformClick('ctrip')">
-                <div class="tile-icon icon-ctrip"><img src="./images/ctrip.png" alt="携程"/></div>
+                <div class="tile-icon icon-ctrip"><img src="frontend/public/images/ctrip.png" alt="携程"/></div>
                 <h3>携程</h3>
                 <p class="tile-hint">生成点评内容</p>
             </div>
 
             <div class="tile" data-platform="qunar" data-feature="qunar" onclick="handlePlatformClick('qunar')">
-                <div class="tile-icon icon-qunar"><img src="./images/qunar.png" alt="去哪儿"/></div>
+                <div class="tile-icon icon-qunar"><img src="frontend/public/images/qunar.png" alt="去哪儿"/></div>
                 <h3>去哪儿</h3>
                 <p class="tile-hint">生成点评内容</p>
             </div>
 
             <div class="tile" data-platform="meituan" data-feature="meituan" onclick="handlePlatformClick('meituan')">
-                <div class="tile-icon icon-mt"><img src="./images/meituan.png" alt="美团"/></div>
+                <div class="tile-icon icon-mt"><img src="frontend/public/images/meituan.png" alt="美团"/></div>
                 <h3>美团</h3>
                 <p class="tile-hint">生成评价内容</p>
             </div>
 
             <div class="tile" data-feature="video_channel" onclick="handleRestrictedEntry()">
-                <div class="tile-icon icon-channel"><img src="./images/wx_channel.png" alt="视频号"/></div>
+                <div class="tile-icon icon-channel"><img src="frontend/public/images/wx_channel.png" alt="视频号"/></div>
                 <h3>关注视频号</h3>
             </div>
             <div class="tile" data-feature="douyin_profile" onclick="openDouyinProfile()">
-                <div class="tile-icon icon-dy"><img src="./images/douyin.png" alt="关注抖音"/></div>
+                <div class="tile-icon icon-dy"><img src="frontend/public/images/douyin.png" alt="关注抖音"/></div>
                 <h3>关注抖音</h3>
             </div>
             <div class="tile mini-program-tile" data-feature="mini_program" onclick="openMiniProgram()">
-                <div class="tile-icon icon-wx"><img src="./images/miniapp.png" alt="一屿藏饰手作"/></div>
+                <div class="tile-icon icon-wx"><img src="frontend/public/images/miniapp.png" alt="一屿藏饰手作"/></div>
                 <h3>一屿藏饰手作</h3>
             </div>
             <div class="tile" data-feature="wechat_qr" onclick="openWechatQrModal()">
-                <div class="tile-icon icon-wx"><img src="./images/wechat.png" alt="加微信"/></div>
+                <div class="tile-icon icon-wx"><img src="frontend/public/images/wechat.png" alt="加微信"/></div>
                 <h3>加微信</h3>
             </div>
             <div class="tile" data-feature="wifi" onclick="openWifiModal()">
-                <div class="tile-icon icon-wifi"><img src="images/wifi.png" alt="连WIFI"/></div>
+                <div class="tile-icon icon-wifi"><img src="frontend/public/images/wifi.png" alt="连WIFI"/></div>
                 <h3>连WIFI</h3>
             </div>
             <div class="tile" data-feature="more" onclick="showToast('噔噔噔噔~敬请期待🤓')">
-                <div class="tile-icon icon-dp"><img src="./images/more.png" alt="更多"/></div>
+                <div class="tile-icon icon-dp"><img src="frontend/public/images/more.png" alt="更多"/></div>
                 <h3>更多</h3>
             </div>
         </div>
@@ -982,7 +982,7 @@
         <p class="wechat-qr-desc">若无法直接识别，可截图后打开微信扫一扫，从相册中选择二维码。</p>
 
         <div class="wechat-qr-box">
-            <img class="wechat-qr-image" src="images/ymdq/wechat_qr.png" alt="微信二维码"/>
+            <img class="wechat-qr-image" src="frontend/public/images/ymdq/wechat_qr.png" alt="微信二维码"/>
         </div>
 
         <button class="wifi-modal-close" type="button" onclick="hideWechatQrModal()">×</button>
@@ -994,7 +994,7 @@
         <p class="wechat-qr-desc">若无法直接识别，可截图后打开微信扫一扫，从相册中选择小程序码。</p>
 
         <div class="wechat-qr-box">
-            <img class="wechat-qr-image" src="images/ymdq/miniProgram_qr.png" alt="小程序二维码"/>
+            <img class="wechat-qr-image" src="frontend/public/images/ymdq/miniProgram_qr.png" alt="小程序二维码"/>
         </div>
 
         <button class="wifi-modal-close" type="button" onclick="hideMiniProgramQrModal()">×</button>
@@ -2106,8 +2106,7 @@
         updateGenerateUI(false);
         updatePlatformBadges();
     }
-</script>
-<script>
+
     initApp();
     updatePlatformBadges();
 </script>
