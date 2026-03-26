@@ -2083,7 +2083,7 @@
 
     // 读取某个平台在当前商户下的配置参数
     function getPlatformConfig(platform) {
-        return merchantConfig?.platforms?.[platform] || {};
+        return merchant?.platforms?.[platform] || {};
     }
 
     // 页面初始化：从 URL 读取商户参数，加载配置并刷新 UI
