@@ -1215,7 +1215,7 @@ updatePlatformBadges();
           <h3>加微信</h3>
         </div>
         <div class="tile" data-feature="wifi" @click="openWifiModal()">
-          <div class="tile-icon icon-wifi"><img src="../images/wifi.png" alt="连WIFI"/></div>
+          <div class="tile-icon icon-wifi"><img src="/images/wifi.png" alt="连WIFI"/></div>
           <h3>连WIFI</h3>
         </div>
         <div class="tile" data-feature="more" @click="showToast('噔噔噔噔~敬请期待🤓')">
@@ -1340,7 +1340,7 @@ body {
 
 .hero {
   text-align: center;
-  background: url('/public/images/banner.png') no-repeat center;
+  background: url('/images/banner.png') no-repeat center;
   background-size: cover;
   border-radius: 24px;
   padding: 32px 20px 24px;
