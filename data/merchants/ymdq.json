@@ -24,8 +24,8 @@
     "password": "ymdq888888"
   },
   "social": {
-    "wechat_qr": "./images/wechat_qr.png",
-    "mini_program_qr": "./images/miniProgram_qr.png"
+    "wechat_qr": "./images/ymdq/wechat_qr.png",
+    "mini_program_qr": "./images/ymdq/miniProgram_qr.png"
   },
   "platforms": {
     "douyin": {
