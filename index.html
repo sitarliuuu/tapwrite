@@ -1026,6 +1026,8 @@
     // AI 关闭时使用的固定测试文案
     const MOCK_GENERATED_TEXT = "这次入住体验很好，位置方便，房间干净舒服，整体氛围也很放松，服务贴心，来这边玩的话会愿意推荐给朋友。";
 
+    const API_BASE_URL = "https://tapwrite-api.sitarliuuu.workers.dev";
+
     // 统一复制文本到剪贴板，优先使用 Clipboard API，失败时降级到 textarea 方案
     async function writeClipboardText(text) {
         if (!text || !text.trim()) return false;
@@ -1509,7 +1511,7 @@
         const timeoutId = setTimeout(() => controller.abort(), 20000);
 
         try {
-            const res = await fetch("https://tapwrite-api.sitarliuuu.workers.dev/generate", {
+            const res = await fetch(`${API_BASE_URL}/generate`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -1991,7 +1993,7 @@
     // 根据商户 slug 加载对应 JSON 配置
     async function loadMerchantConfig(slug) {
         try {
-            const res = await fetch(`https://tapwrite-api.sitarliuuu.workers.dev/config?m=${encodeURIComponent(slug)}`);
+            const res = await fetch(`${API_BASE_URL}/config?m=${encodeURIComponent(slug)}`);
 
             if (!res.ok) {
                 throw new Error("NOT_FOUND");
