@@ -1509,7 +1509,6 @@
             return false;
         }
 
-        const apiKey = "sk-a1c92c976b554fc8b3b7d55776515597";
 
         isGenerating = true;
         generatingPlatform = selectedPlatform;
@@ -1527,21 +1526,18 @@
         const timeoutId = setTimeout(() => controller.abort(), 20000);
 
         try {
-            const res = await fetch("https://api.deepseek.com/chat/completions", {
+            const res = await fetch("https://tapwrite-api.sitarliuuu.workers.dev/generate", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + apiKey
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    model: "deepseek-chat",
-                    messages: [{role: "user", content: prompt}],
-                    temperature: 0.8,
-                    stream: false
+                    merchantSlug: currentMerchantSlug,
+                    platform: selectedPlatform,
+                    prompt
                 }),
                 signal: controller.signal
             });
-
             clearTimeout(timeoutId);
 
             if (!res.ok) {
@@ -1557,7 +1553,7 @@
             }
 
             const data = await res.json();
-            const content = data?.choices?.[0]?.message?.content;
+            const content = data?.content;
 
             if (!content) {
                 setStatus("请求成功但没有拿到 content。\n\n返回：\n" + JSON.stringify(data, null, 2));
