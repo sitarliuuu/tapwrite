@@ -1531,11 +1531,11 @@
                     const errData = await res.json();
 
                     if (errData?.error === "quota exceeded") {
-                        errMsg = "今日生成次数已用完，请明天再来～";
+                        showToast("今日生成次数已用完，请明天再来～");
                     } else if (errData?.error === "merchant disabled") {
-                        errMsg = "当前商户已停用";
+                        showToast("当前商户已停用");
                     } else if (errData?.error === "rate limit exceeded") {
-                        errMsg = "操作太频繁啦，AI也需要休息一下噢😯";
+                        showToast("操作太频繁啦，AI也需要休息一下噢😯");
                     } else if (errData?.error) {
                         errMsg = errData.error;
                     }
