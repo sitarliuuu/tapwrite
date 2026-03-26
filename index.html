@@ -1998,7 +1998,7 @@
     // 根据商户 slug 加载对应 JSON 配置
     async function loadMerchantConfig(slug) {
         try {
-            const res = await fetch(`./data/merchants/${slug}.json`);
+            const res = await fetch(`https://tapwrite-api.sitarliuuu.workers.dev/?m=${encodeURIComponent(slug)}`);
 
             if (!res.ok) {
                 throw new Error("NOT_FOUND");
